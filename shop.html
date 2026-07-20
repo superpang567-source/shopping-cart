@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
+    <title>完整購物系統 · 會員 + 訂單</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f0f4fa;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .app-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.25);
+            padding: 2rem;
+        }
+
+        .navbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 1.2rem;
+            border-bottom: 2px solid #eef2f7;
+            margin-bottom: 1.8rem;
+            gap: 0.8rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e2e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar-brand i {
+            color: #2a7de1;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #f2f7fd;
+            padding: 0.2rem 1rem 0.2rem 0.6rem;
+            border-radius: 40px;
+            border: 1px solid #dde6f0;
+        }
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            background: #2a7de1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .user-name {
+            font-weight: 500;
+            color: #1a3b5c;
+            font-size: 0.9rem;
+        }
+        .user-name .guest-text {
+            color: #7a94b0;
+            font-weight: 400;
+        }
+        .user-phone {
+            font-size: 0.75rem;
+            color: #5f7c9a;
+            background: #eaf0f8;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+        }
+        .user-role-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+            background: #d4a12a;
+            color: white;
+        }
+        .user-role-badge.admin {
+            background: #c53e3e;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: none;
+            color: #a54a4a;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+        }
+        .btn-logout:hover {
+            background: #ffe8e8;
+        }
+
+        .btn {
+            padding: 0.5rem 1.2rem;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: #1a4d7a;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0f3b60;
+            transform: scale(0.97);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #1d3f5e;
+            border: 1px solid #b6c9dd;
+        }
+        .btn-outline:hover {
+            background: #e6eff8;
+        }
+        .btn-success {
+            background: #1e7a5e;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #15634a;
+        }
+        .btn-danger {
+            background: #c53e3e;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #a52a2a;
+        }
+        .btn-warning {
+            background: #d4a12a;
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #b8891a;
+        }
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        .btn-xs {
+            padding: 0.15rem 0.6rem;
+            font-size: 0.7rem;
+        }
+        .btn-danger-outline {
+            background: transparent;
+            border: 1px solid #f0ced0;
+            color: #a54a4a;
+        }
+        .btn-danger-outline:hover {
+            background: #ffe8e8;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 0.5rem;
+        }
+        .tab-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #5f7c9a;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.15s;
+            font-size: 0.95rem;
+        }
+        .tab-btn:hover {
+            background: #eef4fa;
+        }
+        .tab-btn.active {
+            background: #1a4d7a;
+            color: white;
+        }
+        .tab-btn.hidden {
+            display: none;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 商品卡片 ===== */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 1rem 1rem 1.2rem;
+            text-align: center;
+            border: 1px solid #eaeef3;
+            transition: 0.2s;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            border-color: #c5d5e8;
+        }
+
+        .product-card .product-image {
+            width: 100%;
+            height: 160px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #f0f4fa;
+            margin-bottom: 0.6rem;
+        }
+        .product-card .product-image-placeholder {
+            width: 100%;
+            height: 160px;
+            border-radius: 14px;
+            background: #e8effa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #b0c8e0;
+            margin-bottom: 0.6rem;
+        }
+
+        .product-card .name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #0b1e2e;
+            margin-bottom: 0.2rem;
+        }
+        .product-card .desc {
+            font-size: 0.82rem;
+            color: #6a8aaa;
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+            height: 2.6rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .product-card .price {
+            color: #1a4d7a;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 0.2rem 0 0.6rem;
+        }
+        .product-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .product-card .delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #f8d7da;
+            border: none;
+            color: #721c24;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.15s;
+            z-index: 2;
+        }
+        .product-card .delete-btn:hover {
+            background: #c53e3e;
+            color: white;
+        }
+
+        /* ===== 購物車 ===== */
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            min-height: 80px;
+        }
+
+        .item-card {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9fbfd;
+            border-radius: 16px;
+            padding: 0.5rem 1rem;
+            border: 1px solid #eaeef3;
+            gap: 0.5rem;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex: 2 1 150px;
+        }
+        .item-info .thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #e0e9f5;
+            flex-shrink: 0;
+        }
+        .item-info .thumb-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #e0e9f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8aaccc;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .item-info .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .item-info .price {
+            font-size: 0.8rem;
+            color: #3b5a7a;
+        }
+
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 30px;
+            border: 1px solid #d2dce8;
+            overflow: hidden;
+        }
+        .qty-btn {
+            background: #f4f8ff;
+            border: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .qty-btn:hover {
+            background: #dfe9f5;
+        }
+        .qty-number {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: white;
+        }
+        .item-subtotal {
+            font-weight: 600;
+            min-width: 60px;
+            text-align: right;
+            font-size: 0.95rem;
+        }
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #9aafc7;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .remove-btn:hover {
+            color: #c53e3e;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: #5f7c9a;
+        }
+        .empty-cart i {
+            font-size: 2.5rem;
+            color: #b8ccdf;
+        }
+
+        .cart-summary {
+            background: #f2f7fd;
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #dfe8f2;
+            gap: 0.8rem;
+        }
+        .total-price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0a253b;
+        }
+        .total-price small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #4a6d8f;
+        }
+
+        /* ===== 訂單 ===== */
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .order-card {
+            background: #f9fbfd;
+            border-radius: 16px;
+            padding: 1rem 1.2rem;
+            border: 1px solid #eaeef3;
+        }
+        .order-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+        .order-id {
+            font-weight: 600;
+            color: #0b1e2e;
+        }
+        .order-date {
+            color: #5f7c9a;
+            font-size: 0.85rem;
+        }
+        .order-status {
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #c3e6cb; color: #0b5e2e; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .order-items {
+            font-size: 0.9rem;
+            color: #1a3b5c;
+            margin: 0.4rem 0;
+        }
+        .order-total {
+            font-weight: 700;
+            color: #0a253b;
+        }
+        .order-address {
+            font-size: 0.85rem;
+            color: #5f7c9a;
+            margin-top: 0.3rem;
+        }
+        .order-actions {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 0.6rem;
+        }
+        .order-user-info {
+            font-size: 0.8rem;
+            color: #5f7c9a;
+            background: #eaf0f8;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* ===== 會員管理 ===== */
+        .member-table-wrap {
+            overflow-x: auto;
+            background: #f9fbfd;
+            border-radius: 16px;
+            border: 1px solid #eaeef3;
+            padding: 0.2rem;
+        }
+        .member-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 600px;
+        }
+        .member-table th {
+            text-align: left;
+            padding: 0.7rem 1rem;
+            background: #eef3f8;
+            color: #1a3b5c;
+            font-weight: 600;
+            border-bottom: 2px solid #dce5ef;
+        }
+        .member-table td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #eaeef3;
+            color: #0b1e2e;
+        }
+        .member-table tr:hover td {
+            background: #f2f6fc;
+        }
+        .member-table .member-role {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .member-table .member-role.admin {
+            background: #c53e3e;
+            color: white;
+        }
+        .member-table .member-role.member {
+            background: #d4a12a;
+            color: white;
+        }
+        .member-table .order-count {
+            background: #eaf0f8;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .member-table .btn-sm {
+            padding: 0.15rem 0.6rem;
+            font-size: 0.7rem;
+        }
+        .member-table .delete-member-btn {
+            color: #c53e3e;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            transition: 0.15s;
+        }
+        .member-table .delete-member-btn:hover {
+            background: #ffe8e8;
+        }
+        .member-table .view-orders-btn {
+            color: #2a7de1;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            transition: 0.15s;
+        }
+        .member-table .view-orders-btn:hover {
+            background: #e8effa;
+        }
+
+        .member-stats {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            padding: 0.8rem 1.2rem;
+            background: #f9fbfd;
+            border-radius: 12px;
+            border: 1px solid #eaeef3;
+        }
+        .member-stats span {
+            font-size: 0.9rem;
+            color: #1a3b5c;
+        }
+        .member-stats strong {
+            color: #0b1e2e;
+        }
+
+        /* ===== 會員資料 ===== */
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 700px) {
+            .profile-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-card {
+            background: #f9fbfd;
+            border-radius: 16px;
+            padding: 1.2rem;
+            border: 1px solid #eaeef3;
+        }
+        .profile-card h3 {
+            font-size: 1rem;
+            color: #0b1e2e;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-card h3 i {
+            color: #2a7de1;
+        }
+
+        .address-item {
+            background: white;
+            padding: 0.5rem 0.8rem;
+            border-radius: 12px;
+            margin-bottom: 0.4rem;
+            border: 1px solid #eaeef3;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .address-item .default-badge {
+            background: #1e7a5e;
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+        }
+        .address-item .address-actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .address-item .address-actions button {
+            background: none;
+            border: none;
+            color: #9aafc7;
+            cursor: pointer;
+            padding: 0.1rem 0.3rem;
+            font-size: 0.8rem;
+            transition: 0.15s;
+            border-radius: 4px;
+        }
+        .address-item .address-actions .delete-addr-btn:hover {
+            color: #c53e3e;
+            background: #ffe8e8;
+        }
+        .address-item .address-actions .set-default-btn:hover {
+            color: #1e7a5e;
+            background: #e8f5ee;
+        }
+
+        .address-form {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 0.6rem;
+        }
+        .address-form input {
+            flex: 1;
+            padding: 0.4rem 0.8rem;
+            border: 1.5px solid #dce5ef;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            min-width: 120px;
+        }
+        .address-form input:focus {
+            outline: none;
+            border-color: #2a7de1;
+        }
+
+        .order-history-item {
+            font-size: 0.85rem;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #eaeef3;
+            display: flex;
+            justify-content: space-between;
+        }
+        .order-history-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            background: #eaf0f8;
+            padding: 0.1rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #1a3b5c;
+        }
+
+        /* ===== 編輯個人資料 ===== */
+        .edit-profile-form {
+            background: white;
+            padding: 1rem 1.2rem;
+            border-radius: 14px;
+            border: 1px solid #eaeef3;
+            margin-bottom: 1.2rem;
+        }
+        .edit-profile-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .edit-profile-form .form-group {
+            margin-bottom: 0.6rem;
+        }
+        .edit-profile-form .form-group label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1a3b5c;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .edit-profile-form .form-group input {
+            width: 100%;
+            padding: 0.4rem 0.8rem;
+            border: 1.5px solid #dce5ef;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: #fafcff;
+        }
+        .edit-profile-form .form-group input:focus {
+            outline: none;
+            border-color: #2a7de1;
+        }
+        .edit-profile-form .form-group input:disabled {
+            background: #f0f4fa;
+            color: #7a94b0;
+        }
+        .edit-profile-form .form-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .edit-profile-form .form-actions .btn {
+            padding: 0.35rem 1.2rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 700px) {
+            .edit-profile-form .form-row {
+                grid-template-columns: 1fr;
+            }
+            .member-table {
+                font-size: 0.8rem;
+            }
+            .member-table th,
+            .member-table td {
+                padding: 0.4rem 0.6rem;
+            }
+        }
+
+        /* ===== 統計儀表板 ===== */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            border: 1px solid #eaeef3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0b1e2e;
+        }
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: #5f7c9a;
+            margin-top: 0.2rem;
+        }
+        .stat-card .stat-icon {
+            font-size: 1.4rem;
+            margin-bottom: 0.2rem;
+        }
+        .stat-card.total .stat-icon { color: #2a7de1; }
+        .stat-card.pending .stat-icon { color: #d4a12a; }
+        .stat-card.shipped .stat-icon { color: #1e7a5e; }
+        .stat-card.cancelled .stat-icon { color: #c53e3e; }
+
+        .status-bars {
+            display: flex;
+            gap: 0.4rem;
+            height: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+            background: #eef2f7;
+        }
+        .status-bar {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 0;
+        }
+        .status-bar.pending { background: #d4a12a; }
+        .status-bar.processing { background: #2a7de1; }
+        .status-bar.shipped { background: #1e7a5e; }
+        .status-bar.delivered { background: #28a745; }
+        .status-bar.cancelled { background: #c53e3e; }
+
+        .status-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+            margin: 0.6rem 0 0.2rem;
+            font-size: 0.8rem;
+            color: #1a3b5c;
+        }
+        .status-legend .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .admin-product-form {
+            background: #f9fbfd;
+            border-radius: 16px;
+            padding: 1.2rem;
+            border: 1px solid #eaeef3;
+            margin-bottom: 1.5rem;
+        }
+        .admin-product-form h4 {
+            margin-bottom: 0.8rem;
+            color: #1a3b5c;
+        }
+        .admin-product-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 0.8rem;
+            align-items: flex-end;
+        }
+        .admin-product-form .form-row .form-group {
+            margin-bottom: 0;
+        }
+        .admin-product-form .form-row .form-group label {
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .admin-product-form .form-row .form-group input {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            width: 100%;
+            border: 1.5px solid #dce5ef;
+            border-radius: 10px;
+        }
+        .admin-product-form .form-row .form-group input:focus {
+            outline: none;
+            border-color: #2a7de1;
+        }
+        .admin-product-form .form-row .btn {
+            padding: 0.4rem 1.2rem;
+            height: 38px;
+            white-space: nowrap;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 28px;
+            max-width: 440px;
+            width: 100%;
+            padding: 2rem;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.8rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #8aa3bf;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            color: #1a3b5c;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0b1e2e;
+            margin-bottom: 0.2rem;
+        }
+        .modal-subtitle {
+            color: #5f7c9a;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #1a3b5c;
+            margin-bottom: 0.2rem;
+            font-size: 0.85rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem 0.9rem;
+            border: 1.5px solid #dce5ef;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: #fafcff;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a7de1;
+            box-shadow: 0 0 0 3px rgba(42,125,225,0.12);
+        }
+        .form-error {
+            color: #c53e3e;
+            font-size: 0.8rem;
+            display: none;
+        }
+        .form-error.show {
+            display: block;
+        }
+        .modal-footer-text {
+            text-align: center;
+            margin-top: 1rem;
+            color: #5f7c9a;
+            font-size: 0.85rem;
+        }
+        .modal-footer-text a {
+            color: #1a4d7a;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        .flex { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        .mt-1 { margin-top: 0.8rem; }
+        .text-center { text-align: center; }
+        .mb-1 { margin-bottom: 0.8rem; }
+        .hidden { display: none !important; }
+
+        @media (max-width: 700px) {
+            .app-wrapper { padding: 1rem; }
+            .navbar { flex-direction: column; align-items: stretch; }
+            .navbar-right { justify-content: space-between; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .admin-product-form .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+            .admin-product-form .form-row .btn { width: 100%; }
+            .stats-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .product-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- ===== 導航 ===== -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-store"></i> 購物商城
+        </div>
+        <div class="navbar-right">
+            <div class="user-status">
+                <div class="user-avatar" id="userAvatar">遊</div>
+                <span class="user-name" id="userNameDisplay"><span class="guest-text">訪客</span></span>
+                <span class="user-phone" id="userPhoneDisplay"></span>
+                <span class="user-role-badge" id="userRoleBadge" style="display:none;"></span>
+                <button class="btn-logout" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> 登出</button>
+            </div>
+            <button class="btn btn-outline btn-sm" id="loginBtn"><i class="fas fa-sign-in-alt"></i> 登入</button>
+            <button class="btn btn-primary btn-sm" id="registerBtn"><i class="fas fa-user-plus"></i> 註冊</button>
+        </div>
+    </nav>
+
+    <!-- ===== 頁籤 ===== -->
+    <div class="tabs" id="tabContainer">
+        <button class="tab-btn active" data-tab="tabProducts"><i class="fas fa-store-alt"></i> 商品</button>
+        <button class="tab-btn hidden" data-tab="tabCart"><i class="fas fa-shopping-cart"></i> 購物車 <span class="badge" id="cartBadge">0</span></button>
+        <button class="tab-btn hidden" data-tab="tabOrders"><i class="fas fa-truck"></i> 訂單</button>
+        <button class="tab-btn hidden" data-tab="tabMembers"><i class="fas fa-users"></i> 會員管理</button>
+        <button class="tab-btn hidden" data-tab="tabStats"><i class="fas fa-chart-pie"></i> 統計</button>
+        <button class="tab-btn hidden" data-tab="tabProfile"><i class="fas fa-user-circle"></i> 會員資料</button>
+    </div>
+
+    <!-- ===== 商品 ===== -->
+    <div class="tab-content active" id="tabProducts">
+        <div id="adminProductForm" style="display:none;" class="admin-product-form">
+            <h4><i class="fas fa-plus-circle" style="color:#1e7a5e;"></i> 新增商品（管理員專用）</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>商品名稱</label>
+                    <input type="text" id="newProductName" placeholder="名稱" />
+                </div>
+                <div class="form-group">
+                    <label>價格 ($)</label>
+                    <input type="number" id="newProductPrice" placeholder="價格" />
+                </div>
+                <div class="form-group">
+                    <label>介紹</label>
+                    <input type="text" id="newProductDesc" placeholder="簡短介紹" />
+                </div>
+                <div class="form-group">
+                    <label>圖片網址</label>
+                    <input type="text" id="newProductImage" placeholder="https://...jpg" />
+                </div>
+                <button class="btn btn-success" id="addProductBtn"><i class="fas fa-plus"></i> 新增</button>
+            </div>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <!-- ===== 購物車 ===== -->
+    <div class="tab-content" id="tabCart">
+        <div class="cart-items" id="cartItemsContainer"></div>
+        <div class="cart-summary">
+            <div>
+                <span style="font-weight:500;">總計</span>
+                <span class="total-price" id="totalPriceDisplay"><small>$</small>0</span>
+            </div>
+            <div class="flex">
+                <button class="btn btn-danger-outline btn-sm" id="clearCartBtn"><i class="fas fa-trash-alt"></i> 清空</button>
+                <button class="btn btn-success" id="checkoutBtn"><i class="fas fa-credit-card"></i> 結帳</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 訂單 ===== -->
+    <div class="tab-content" id="tabOrders">
+        <div class="order-list" id="orderList"></div>
+    </div>
+
+    <!-- ===== 會員管理 ===== -->
+    <div class="tab-content" id="tabMembers">
+        <div id="memberManagement">
+            <div class="member-stats" id="memberStats">
+                <span>👥 總會員數：<strong id="totalMembers">0</strong></span>
+                <span>📋 總訂單數：<strong id="totalMemberOrders">0</strong></span>
+                <span>💰 總消費金額：<strong id="totalMemberSpending">$0</strong></span>
+            </div>
+            <div class="member-table-wrap">
+                <table class="member-table">
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>電話</th>
+                            <th>角色</th>
+                            <th>訂單數</th>
+                            <th>總消費</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="memberEmpty" style="display:none;text-align:center;padding:3rem;color:#5f7c9a;">
+            <i class="fas fa-users" style="font-size:3rem;color:#b8ccdf;margin-bottom:1rem;"></i>
+            <p>尚無會員資料</p>
+        </div>
+    </div>
+
+    <!-- ===== 統計 ===== -->
+    <div class="tab-content" id="tabStats">
+        <div id="statsContent">
+            <div class="stats-dashboard" id="statsDashboard">
+                <div class="stat-card total">
+                    <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                    <div class="stat-number" id="statTotalOrders">0</div>
+                    <div class="stat-label">總訂單數</div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-number" id="statPending">0</div>
+                    <div class="stat-label">待處理</div>
+                </div>
+                <div class="stat-card shipped">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-number" id="statCompleted">0</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+                <div class="stat-card cancelled">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-number" id="statCancelled">0</div>
+                    <div class="stat-label">已取消</div>
+                </div>
+            </div>
+
+            <div style="background:#f9fbfd;border-radius:16px;padding:1.2rem;border:1px solid #eaeef3;margin-bottom:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                    <span style="font-weight:600;color:#0b1e2e;"><i class="fas fa-chart-bar" style="color:#2a7de1;"></i> 訂單狀態分布</span>
+                    <span style="font-size:0.85rem;color:#5f7c9a;">總金額：<strong id="statTotalAmount" style="color:#1a4d7a;">$0</strong></span>
+                </div>
+                <div class="status-bars" id="statusBars"></div>
+                <div class="status-legend" id="statusLegend"></div>
+            </div>
+
+            <div style="background:#f9fbfd;border-radius:16px;padding:1.2rem;border:1px solid #eaeef3;">
+                <h4 style="margin-bottom:0.6rem;color:#0b1e2e;"><i class="fas fa-list" style="color:#2a7de1;"></i> 近期訂單</h4>
+                <div id="recentOrdersList" style="max-height:300px;overflow-y:auto;"></div>
+            </div>
+        </div>
+        <div id="statsEmpty" style="display:none;text-align:center;padding:3rem;color:#5f7c9a;">
+            <i class="fas fa-chart-pie" style="font-size:3rem;color:#b8ccdf;margin-bottom:1rem;"></i>
+            <p>尚無訂單資料</p>
+        </div>
+    </div>
+
+    <!-- ===== 會員資料 ===== -->
+    <div class="tab-content" id="tabProfile">
+        <div id="editProfileContainer" style="display:none;">
+            <div class="edit-profile-form">
+                <h4 style="margin-bottom:0.6rem;color:#0b1e2e;"><i class="fas fa-user-edit" style="color:#2a7de1;"></i> 編輯個人資料</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" id="editName" placeholder="請輸入姓名" />
+                    </div>
+                    <div class="form-group">
+                        <label>電話號碼（帳號）</label>
+                        <input type="tel" id="editPhone" placeholder="請輸入電話號碼" disabled />
+                        <span style="font-size:0.7rem;color:#8aa3bf;">⚠️ 電話號碼為登入帳號，不可修改</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>新密碼（留空則不修改）</label>
+                        <input type="password" id="editPassword" placeholder="輸入新密碼（至少6字元）" />
+                    </div>
+                    <div class="form-group">
+                        <label>確認新密碼</label>
+                        <input type="password" id="editPasswordConfirm" placeholder="再次輸入新密碼" />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-success" id="saveProfileBtn"><i class="fas fa-save"></i> 儲存修改</button>
+                    <button class="btn btn-outline" id="cancelEditBtn"><i class="fas fa-times"></i> 取消</button>
+                </div>
+                <div id="editProfileMessage" style="margin-top:0.5rem;font-size:0.9rem;display:none;"></div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-card">
+                <h3><i class="fas fa-address-book"></i> 常用收件地址</h3>
+                <div id="addressList"></div>
+                <div class="address-form">
+                    <input type="text" id="newAddressInput" placeholder="輸入新地址..." />
+                    <button class="btn btn-primary btn-sm" id="addAddressBtn">+ 新增</button>
+                </div>
+            </div>
+            <div class="profile-card">
+                <h3><i class="fas fa-history"></i> 訂單歷史</h3>
+                <div id="orderHistoryList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 模態框 ===== -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal-box">
+        <button class="modal-close" id="modalCloseBtn">&times;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    // ============================================================
+    //  商品資料
+    // ============================================================
+    const PRODUCTS_KEY = 'shop_products';
+
+    function getProducts() {
+        try {
+            const data = localStorage.getItem(PRODUCTS_KEY);
+            if (data) {
+                return JSON.parse(data);
+            }
+        } catch { }
+        return [
+            { id: 1, name: '經典後背包', price: 1280, desc: '耐用防潑水，大容量收納，適合通勤與旅行', image: 'https://picsum.photos/seed/bag/400/300', icon: 'fa-solid fa-bag-shopping' },
+            { id: 2, name: '無線藍牙耳機', price: 890, desc: '主動降噪，續航24小時，舒適佩戴體驗', image: 'https://picsum.photos/seed/earphone/400/300', icon: 'fa-solid fa-headphones' },
+            { id: 3, name: '質感陶瓷杯', price: 420, desc: '手工製作，釉色溫潤，送禮自用兩相宜', image: 'https://picsum.photos/seed/cup/400/300', icon: 'fa-solid fa-mug-saucer' },
+            { id: 4, name: 'LED 閱讀燈', price: 650, desc: '三段調光，護眼不閃爍，可彎曲設計', image: 'https://picsum.photos/seed/lamp/400/300', icon: 'fa-solid fa-lamp' },
+            { id: 5, name: '智慧手錶', price: 1990, desc: '心率監測、運動追蹤、防水50米', image: 'https://picsum.photos/seed/watch/400/300', icon: 'fa-solid fa-clock' },
+            { id: 6, name: '無線充電盤', price: 750, desc: '快速充電，相容所有Qi設備，輕巧便攜', image: 'https://picsum.photos/seed/charger/400/300', icon: 'fa-solid fa-bolt' },
+        ];
+    }
+
+    function saveProducts(products) {
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    }
+
+    // ============================================================
+    //  儲存工具
+    // ============================================================
+    const STORAGE_KEY = 'shop_members';
+    const SESSION_KEY = 'shop_current_user';
+    const ORDERS_KEY = 'shop_orders';
+
+    const ADMIN_ACCOUNT = {
+        phone: '7294',
+        password: '0904',
+        name: '系統管理員',
+        role: 'admin',
+        addresses: ['管理中心'],
+        createdAt: new Date().toISOString()
+    };
+
+    function getMembers() {
+        try {
+            const members = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const adminExists = members.find(m => m.phone === ADMIN_ACCOUNT.phone);
+            if (!adminExists) {
+                members.push(ADMIN_ACCOUNT);
+                saveMembers(members);
+            }
+            return members;
+        } catch { return []; }
+    }
+    function saveMembers(m) { localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); }
+    function getCurrentUser() {
+        try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; }
+    }
+    function setCurrentUser(u) { localStorage.setItem(SESSION_KEY, JSON.stringify(u)); }
+    function clearCurrentUser() { localStorage.removeItem(SESSION_KEY); }
+
+    function getOrders() {
+        try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; } catch { return []; }
+    }
+    function saveOrders(o) { localStorage.setItem(ORDERS_KEY, JSON.stringify(o)); }
+
+    // ============================================================
+    //  會員功能
+    // ============================================================
+    function registerUser(phone, password, name) {
+        const members = getMembers();
+        if (members.find(m => m.phone === phone)) {
+            return { success: false, message: '此電話號碼已經註冊過！' };
+        }
+        const newUser = {
+            id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+            phone: phone,
+            password: password,
+            name: name || phone,
+            role: 'member',
+            addresses: ['台北市信義區松仁路100號（預設地址）'],
+            createdAt: new Date().toISOString()
+        };
+        members.push(newUser);
+        saveMembers(members);
+        return { success: true, user: newUser };
+    }
+
+    function loginUser(phone, password) {
+        const members = getMembers();
+        const user = members.find(m => m.phone === phone && m.password === password);
+        if (!user) return { success: false, message: '電話號碼或密碼錯誤！' };
+        return { success: true, user: user };
+    }
+
+    function updateMember(updatedUser) {
+        const members = getMembers();
+        const idx = members.findIndex(m => m.id === updatedUser.id);
+        if (idx === -1) return false;
+        members[idx] = updatedUser;
+        saveMembers(members);
+        const current = getCurrentUser();
+        if (current && current.id === updatedUser.id) {
+            setCurrentUser(updatedUser);
+        }
+        return true;
+    }
+
+    function isAdmin(user) {
+        return user && user.role === 'admin';
+    }
+
+    // ============================================================
+    //  商品管理
+    // ============================================================
+    function addProduct(name, price, desc, image) {
+        const products = getProducts();
+        const maxId = products.reduce((max, p) => Math.max(max, p.id), 0);
+        const newProduct = {
+            id: maxId + 1,
+            name: name.trim(),
+            price: parseInt(price),
+            desc: desc || '精美商品，值得擁有',
+            image: image || 'https://picsum.photos/seed/' + Date.now() + '/400/300',
+            icon: 'fa-solid fa-box'
+        };
+        products.push(newProduct);
+        saveProducts(products);
+        return newProduct;
+    }
+
+    function deleteProduct(productId) {
+        let products = getProducts();
+        products = products.filter(p => p.id !== productId);
+        saveProducts(products);
+        cart = cart.filter(item => item.id !== productId);
+        renderCart();
+        return true;
+    }
+
+    function getProductById(id) {
+        return getProducts().find(p => p.id === id);
+    }
+
+    // ============================================================
+    //  購物車
+    // ============================================================
+    let cart = [
+        { id: 1, quantity: 2 },
+        { id: 2, quantity: 1 },
+        { id: 4, quantity: 1 },
+    ];
+
+    function getActiveCart() { return cart.filter(item => item.quantity > 0); }
+    function calcSubtotal(productId, qty) {
+        const p = getProductById(productId);
+        return p ? p.price * qty : 0;
+    }
+    function calcTotal() {
+        return getActiveCart().reduce((s, i) => s + calcSubtotal(i.id, i.quantity), 0);
+    }
+    function calcTotalItems() {
+        return getActiveCart().reduce((s, i) => s + i.quantity, 0);
+    }
+
+    // ============================================================
+    //  訂單功能
+    // ============================================================
+    function createOrder(user, cartItems, address) {
+        const order = {
+            id: 'ORD-' + Date.now().toString(36).toUpperCase(),
+            userId: user.id,
+            userName: user.name,
+            userPhone: user.phone,
+            items: cartItems.map(item => ({
+                id: item.id,
+                name: getProductById(item.id)?.name || '商品',
+                price: getProductById(item.id)?.price || 0,
+                quantity: item.quantity,
+                image: getProductById(item.id)?.image || ''
+            })),
+            total: cartItems.reduce((s, i) => s + (getProductById(i.id)?.price || 0) * i.quantity, 0),
+            status: 'pending',
+            address: address || user.addresses?.[0] || '未填寫地址',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        const orders = getOrders();
+        orders.unshift(order);
+        saveOrders(orders);
+        return order;
+    }
+
+    function updateOrderStatus(orderId, status, currentUser) {
+        if (!currentUser || !isAdmin(currentUser)) {
+            return { success: false, message: '只有管理員可以更改訂單狀態！' };
+        }
+        const orders = getOrders();
+        const order = orders.find(o => o.id === orderId);
+        if (!order) return { success: false, message: '訂單不存在！' };
+        order.status = status;
+        order.updatedAt = new Date().toISOString();
+        saveOrders(orders);
+        return { success: true, order: order };
+    }
+
+    function getUserOrders(userId, currentUser) {
+        const allOrders = getOrders();
+        if (isAdmin(currentUser)) {
+            return allOrders;
+        }
+        return allOrders.filter(o => o.userId === userId);
+    }
+
+    // 取得會員訂單統計
+    function getMemberOrderStats(userId) {
+        const orders = getOrders().filter(o => o.userId === userId);
+        const count = orders.length;
+        const total = orders.reduce((sum, o) => sum + o.total, 0);
+        return { count, total };
+    }
+
+    // ============================================================
+    //  統計功能
+    // ============================================================
+    function getOrderStats() {
+        const orders = getOrders();
+        const total = orders.length;
+        const pending = orders.filter(o => o.status === 'pending').length;
+        const processing = orders.filter(o => o.status === 'processing').length;
+        const shipped = orders.filter(o => o.status === 'shipped').length;
+        const delivered = orders.filter(o => o.status === 'delivered').length;
+        const cancelled = orders.filter(o => o.status === 'cancelled').length;
+        const completed = shipped + delivered;
+        const totalAmount = orders.reduce((sum, o) => sum + o.total, 0);
+
+        return {
+            total,
+            pending,
+            processing,
+            shipped,
+            delivered,
+            cancelled,
+            completed,
+            totalAmount,
+            orders
+        };
+    }
+
+    function renderStats() {
+        const user = getCurrentUser();
+        if (!user || !isAdmin(user)) {
+            document.getElementById('statsContent').style.display = 'none';
+            document.getElementById('statsEmpty').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('statsContent').style.display = 'block';
+        document.getElementById('statsEmpty').style.display = 'none';
+
+        const stats = getOrderStats();
+
+        document.getElementById('statTotalOrders').textContent = stats.total;
+        document.getElementById('statPending').textContent = stats.pending + stats.processing;
+        document.getElementById('statCompleted').textContent = stats.completed;
+        document.getElementById('statCancelled').textContent = stats.cancelled;
+        document.getElementById('statTotalAmount').textContent = '$' + stats.totalAmount;
+
+        const maxVal = Math.max(stats.total, 1);
+        const barsHtml = `
+            <div class="status-bar pending" style="width:${(stats.pending/maxVal)*100}%;"></div>
+            <div class="status-bar processing" style="width:${(stats.processing/maxVal)*100}%;"></div>
+            <div class="status-bar shipped" style="width:${(stats.shipped/maxVal)*100}%;"></div>
+            <div class="status-bar delivered" style="width:${(stats.delivered/maxVal)*100}%;"></div>
+            <div class="status-bar cancelled" style="width:${(stats.cancelled/maxVal)*100}%;"></div>
+        `;
+        document.getElementById('statusBars').innerHTML = barsHtml;
+
+        const legendHtml = `
+            <span><span class="dot" style="background:#d4a12a;"></span>待處理 ${stats.pending}</span>
+            <span><span class="dot" style="background:#2a7de1;"></span>處理中 ${stats.processing}</span>
+            <span><span class="dot" style="background:#1e7a5e;"></span>已出貨 ${stats.shipped}</span>
+            <span><span class="dot" style="background:#28a745;"></span>已送達 ${stats.delivered}</span>
+            <span><span class="dot" style="background:#c53e3e;"></span>已取消 ${stats.cancelled}</span>
+        `;
+        document.getElementById('statusLegend').innerHTML = legendHtml;
+
+        const recentOrders = stats.orders.slice(0, 10);
+        if (recentOrders.length === 0) {
+            document.getElementById('recentOrdersList').innerHTML = `<p style="color:#5f7c9a;text-align:center;padding:1rem;">尚無訂單</p>`;
+        } else {
+            const statusMap = {
+                'pending': '待處理',
+                'processing': '處理中',
+                'shipped': '已出貨',
+                'delivered': '已送達',
+                'cancelled': '已取消'
+            };
+            const statusClass = {
+                'pending': 'status-pending',
+                'processing': 'status-processing',
+                'shipped': 'status-shipped',
+                'delivered': 'status-delivered',
+                'cancelled': 'status-cancelled'
+            };
+            let html = '';
+            recentOrders.forEach(order => {
+                const itemsStr = order.items.map(i => `${i.name} x${i.quantity}`).join('、');
+                html += `
+                    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #eaeef3;font-size:0.9rem;gap:0.3rem;">
+                        <span style="font-weight:500;color:#0b1e2e;">${order.id}</span>
+                        <span style="color:#5f7c9a;font-size:0.8rem;">${itemsStr}</span>
+                        <span style="font-weight:600;color:#1a4d7a;">$${order.total}</span>
+                        <span class="order-status ${statusClass[order.status] || 'status-pending'}" style="font-size:0.7rem;">${statusMap[order.status] || order.status}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('recentOrdersList').innerHTML = html;
+        }
+    }
+
+    // ============================================================
+    //  地址管理功能
+    // ============================================================
+    function deleteAddress(user, index) {
+        if (!user || !user.addresses) return false;
+        if (user.addresses.length <= 1) {
+            alert('⚠️ 至少保留一個地址！');
+            return false;
+        }
+        if (!confirm('確定要刪除此地址嗎？')) return false;
+        
+        const members = getMembers();
+        const member = members.find(m => m.id === user.id);
+        if (!member) return false;
+        
+        member.addresses.splice(index, 1);
+        saveMembers(members);
+        setCurrentUser(member);
+        renderProfile();
+        return true;
+    }
+
+    function setDefaultAddress(user, index) {
+        if (!user || !user.addresses) return false;
+        if (index === 0) return false;
+        
+        const members = getMembers();
+        const member = members.find(m => m.id === user.id);
+        if (!member) return false;
+        
+        const address = member.addresses.splice(index, 1)[0];
+        member.addresses.unshift(address);
+        saveMembers(members);
+        setCurrentUser(member);
+        renderProfile();
+        return true;
+    }
+
+    // ============================================================
+    //  會員管理功能
+    // ============================================================
+    function renderMemberManagement() {
+        const user = getCurrentUser();
+        if (!user || !isAdmin(user)) {
+            document.getElementById('memberManagement').style.display = 'none';
+            document.getElementById('memberEmpty').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('memberManagement').style.display = 'block';
+        document.getElementById('memberEmpty').style.display = 'none';
+
+        const members = getMembers();
+        // 排除管理員自己（或可選擇顯示所有會員）
+        const nonAdminMembers = members.filter(m => m.role !== 'admin');
+        const allOrders = getOrders();
+
+        // 統計
+        let totalOrders = 0;
+        let totalSpending = 0;
+        nonAdminMembers.forEach(m => {
+            const stats = getMemberOrderStats(m.id);
+            totalOrders += stats.count;
+            totalSpending += stats.total;
+        });
+        document.getElementById('totalMembers').textContent = nonAdminMembers.length;
+        document.getElementById('totalMemberOrders').textContent = totalOrders;
+        document.getElementById('totalMemberSpending').textContent = '$' + totalSpending;
+
+        // 表格
+        let html = '';
+        if (nonAdminMembers.length === 0) {
+            html = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#5f7c9a;">尚無會員</td></tr>`;
+        } else {
+            nonAdminMembers.forEach(m => {
+                const stats = getMemberOrderStats(m.id);
+                html += `
+                    <tr>
+                        <td><strong>${m.name}</strong></td>
+                        <td>${m.phone}</td>
+                        <td><span class="member-role member">會員</span></td>
+                        <td><span class="order-count">${stats.count} 筆</span></td>
+                        <td>$${stats.total}</td>
+                        <td>
+                            <button class="view-orders-btn" data-userid="${m.id}" title="查看訂單"><i class="fas fa-eye"></i></button>
+                            <button class="delete-member-btn" data-userid="${m.id}" title="刪除會員"><i class="fas fa-user-minus"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        document.getElementById('memberTableBody').innerHTML = html;
+
+        // 查看訂單事件
+        document.querySelectorAll('.view-orders-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.dataset.userid;
+                const member = getMembers().find(m => m.id === userId);
+                if (member) {
+                    const orders = getOrders().filter(o => o.userId === userId);
+                    if (orders.length === 0) {
+                        alert(`📋 ${member.name} 目前尚無訂單`);
+                    } else {
+                        let msg = `📋 ${member.name} 的訂單 (${orders.length} 筆)：\n\n`;
+                        orders.forEach(o => {
+                            const statusMap = {
+                                'pending': '待處理', 'processing': '處理中',
+                                'shipped': '已出貨', 'delivered': '已送達',
+                                'cancelled': '已取消'
+                            };
+                            const itemsStr = o.items.map(i => `${i.name} x${i.quantity}`).join('、');
+                            msg += `  ${o.id} | ${statusMap[o.status] || o.status} | $${o.total} | ${itemsStr}\n`;
+                        });
+                        alert(msg);
+                    }
+                }
+            });
+        });
+
+        // 刪除會員事件
+        document.querySelectorAll('.delete-member-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.dataset.userid;
+                const member = getMembers().find(m => m.id === userId);
+                if (!member) return;
+                
+                // 檢查是否有未完成的訂單
+                const hasPendingOrders = getOrders().some(o => 
+                    o.userId === userId && ['pending', 'processing'].includes(o.status)
+                );
+                
+                let confirmMsg = `確定要刪除會員「${member.name}」嗎？`;
+                if (hasPendingOrders) {
+                    confirmMsg += '\n⚠️ 該會員有未完成的訂單（待處理/處理中），刪除後訂單仍會保留。';
+                }
+                
+                if (!confirm(confirmMsg)) return;
+                
+                // 刪除會員（但保留訂單紀錄）
+                let members = getMembers();
+                members = members.filter(m => m.id !== userId);
+                saveMembers(members);
+                
+                // 如果刪除的是當前登入者，登出
+                const currentUser = getCurrentUser();
+                if (currentUser && currentUser.id === userId) {
+                    clearCurrentUser();
+                    updateUserUI();
+                }
+                
+                renderMemberManagement();
+                alert(`✅ 會員「${member.name}」已刪除`);
+            });
+        });
+    }
+
+    // ============================================================
+    //  DOM 參考
+    // ============================================================
+    const $ = id => document.getElementById(id);
+    const productGrid = $('productGrid');
+    const cartContainer = $('cartItemsContainer');
+    const totalPriceEl = $('totalPriceDisplay');
+    const cartBadge = $('cartBadge');
+    const clearCartBtn = $('clearCartBtn');
+    const checkoutBtn = $('checkoutBtn');
+    const orderList = $('orderList');
+    const addressList = $('addressList');
+    const orderHistoryList = $('orderHistoryList');
+    const newAddressInput = $('newAddressInput');
+    const addAddressBtn = $('addAddressBtn');
+
+    const userAvatar = $('userAvatar');
+    const userNameDisplay = $('userNameDisplay');
+    const userPhoneDisplay = $('userPhoneDisplay');
+    const userRoleBadge = $('userRoleBadge');
+    const logoutBtn = $('logoutBtn');
+    const loginBtn = $('loginBtn');
+    const registerBtn = $('registerBtn');
+
+    const modal = $('authModal');
+    const modalContent = $('modalContent');
+    const modalCloseBtn = $('modalCloseBtn');
+
+    const tabContainer = $('tabContainer');
+    const tabBtns = tabContainer.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    const adminProductForm = $('adminProductForm');
+    const newProductName = $('newProductName');
+    const newProductPrice = $('newProductPrice');
+    const newProductDesc = $('newProductDesc');
+    const newProductImage = $('newProductImage');
+    const addProductBtn = $('addProductBtn');
+
+    const editProfileContainer = $('editProfileContainer');
+    const editName = $('editName');
+    const editPhone = $('editPhone');
+    const editPassword = $('editPassword');
+    const editPasswordConfirm = $('editPasswordConfirm');
+    const saveProfileBtn = $('saveProfileBtn');
+    const cancelEditBtn = $('cancelEditBtn');
+    const editProfileMessage = $('editProfileMessage');
+
+    // ============================================================
+    //  頁籤切換
+    // ============================================================
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            tabContents.forEach(c => c.classList.remove('active'));
+            const target = $(this.dataset.tab);
+            if (target) target.classList.add('active');
+            if (this.dataset.tab === 'tabProducts') renderProducts();
+            if (this.dataset.tab === 'tabOrders') renderOrders();
+            if (this.dataset.tab === 'tabMembers') renderMemberManagement();
+            if (this.dataset.tab === 'tabStats') renderStats();
+            if (this.dataset.tab === 'tabProfile') renderProfile();
+        });
+    });
+
+    // ============================================================
+    //  顯示/隱藏頁籤
+    // ============================================================
+    function updateTabs() {
+        const user = getCurrentUser();
+        const isLoggedIn = !!user;
+        const isAdminUser = isAdmin(user);
+
+        tabBtns.forEach(btn => {
+            const tab = btn.dataset.tab;
+            if (tab === 'tabProducts') {
+                btn.classList.remove('hidden');
+            } else if (tab === 'tabMembers' || tab === 'tabStats') {
+                if (isAdminUser) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+            } else {
+                if (isLoggedIn) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+            }
+        });
+
+        if (!isLoggedIn) {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            const productsBtn = document.querySelector('[data-tab="tabProducts"]');
+            if (productsBtn) productsBtn.classList.add('active');
+            tabContents.forEach(c => c.classList.remove('active'));
+            const productsContent = $('tabProducts');
+            if (productsContent) productsContent.classList.add('active');
+        } else {
+            let hasActive = false;
+            tabBtns.forEach(b => {
+                if (b.classList.contains('active')) hasActive = true;
+            });
+            if (!hasActive) {
+                const productsBtn = document.querySelector('[data-tab="tabProducts"]');
+                if (productsBtn) productsBtn.classList.add('active');
+                const productsContent = $('tabProducts');
+                if (productsContent) productsContent.classList.add('active');
+            }
+        }
+
+        if (user && isAdminUser) {
+            adminProductForm.style.display = 'block';
+        } else {
+            adminProductForm.style.display = 'none';
+        }
+
+        if (user) {
+            editProfileContainer.style.display = 'block';
+        } else {
+            editProfileContainer.style.display = 'none';
+        }
+    }
+
+    // ============================================================
+    //  渲染：商品
+    // ============================================================
+    function renderProducts() {
+        const products = getProducts();
+        const user = getCurrentUser();
+        const isAdminUser = isAdmin(user);
+
+        let html = '';
+        products.forEach(p => {
+            const imgHtml = p.image 
+                ? `<img class="product-image" src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />`
+                : '';
+            const placeholderHtml = p.image ? '' : `<div class="product-image-placeholder"><i class="${p.icon || 'fa-solid fa-box'}"></i></div>`;
+            
+            html += `
+                <div class="product-card" data-id="${p.id}">
+                    ${isAdminUser ? `<button class="delete-btn" data-id="${p.id}" title="刪除商品"><i class="fas fa-times"></i></button>` : ''}
+                    ${imgHtml}
+                    ${placeholderHtml}
+                    <div class="name">${p.name}</div>
+                    ${p.desc ? `<div class="desc">${p.desc}</div>` : ''}
+                    <div class="price">$ ${p.price}</div>
+                    <button class="btn btn-primary btn-sm add-to-cart" data-id="${p.id}">
+                        <i class="fas fa-cart-plus"></i> 加入購物車
+                    </button>
+                </div>
+            `;
+        });
+        productGrid.innerHTML = html;
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const user = getCurrentUser();
+                if (!user) {
+                    alert('⚠️ 請先登入才能加入購物車！');
+                    openModal('login');
+                    return;
+                }
+                const id = parseInt(this.dataset.id);
+                addToCart(id);
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = parseInt(this.dataset.id);
+                if (confirm('確定要刪除此商品嗎？')) {
+                    deleteProduct(id);
+                    renderProducts();
+                    renderCart();
+                    cartBadge.textContent = calcTotalItems();
+                }
+            });
+        });
+
+        document.querySelectorAll('.product-image').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const placeholder = document.createElement('div');
+                placeholder.className = 'product-image-placeholder';
+                placeholder.innerHTML = '<i class="fa-solid fa-image"></i>';
+                this.parentNode.insertBefore(placeholder, this);
+            });
+        });
+    }
+
+    function addToCart(productId) {
+        let item = cart.find(i => i.id === productId);
+        if (item) {
+            item.quantity += 1;
+        } else {
+            cart.push({ id: productId, quantity: 1 });
+        }
+        renderCart();
+        cartBadge.textContent = calcTotalItems();
+        tabBtns.forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-tab="tabCart"]').classList.add('active');
+        tabContents.forEach(c => c.classList.remove('active'));
+        $('tabCart').classList.add('active');
+        renderCart();
+    }
+
+    // ============================================================
+    //  新增商品
+    // ============================================================
+    addProductBtn.addEventListener('click', function() {
+        const user = getCurrentUser();
+        if (!user || !isAdmin(user)) {
+            alert('只有管理員可以新增商品！');
+            return;
+        }
+
+        const name = newProductName.value.trim();
+        const price = newProductPrice.value.trim();
+        const desc = newProductDesc.value.trim();
+        const image = newProductImage.value.trim();
+
+        if (!name) {
+            alert('請輸入商品名稱！');
+            newProductName.focus();
+            return;
+        }
+        if (!price || isNaN(price) || parseInt(price) <= 0) {
+            alert('請輸入有效的價格！');
+            newProductPrice.focus();
+            return;
+        }
+
+        addProduct(name, parseInt(price), desc, image);
+        newProductName.value = '';
+        newProductPrice.value = '';
+        newProductDesc.value = '';
+        newProductImage.value = '';
+        renderProducts();
+        alert(`✅ 商品「${name}」已新增！`);
+    });
+
+    // ============================================================
+    //  購物車渲染
+    // ============================================================
+    function renderCart() {
+        const activeItems = getActiveCart();
+        cartBadge.textContent = calcTotalItems();
+
+        if (activeItems.length === 0) {
+            cartContainer.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-box-open"></i>
+                    <p>購物車是空的</p>
+                </div>
+            `;
+            updateSummary(0);
+            return;
+        }
+
+        let html = '';
+        activeItems.forEach(item => {
+            const p = getProductById(item.id);
+            if (!p) return;
+            const subtotal = calcSubtotal(item.id, item.quantity);
+            const thumbHtml = p.image 
+                ? `<img class="thumb" src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />`
+                : '';
+            const placeholderHtml = p.image ? '' : `<div class="thumb-placeholder"><i class="${p.icon || 'fa-solid fa-box'}"></i></div>`;
+            
+            html += `
+                <div class="item-card" data-id="${item.id}">
+                    <div class="item-info">
+                        ${thumbHtml}
+                        ${placeholderHtml}
+                        <div>
+                            <div class="name">${p.name}</div>
+                            <div class="price">$ ${p.price}</div>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" data-action="decrease" data-id="${item.id}"><i class="fas fa-minus"></i></button>
+                            <span class="qty-number">${item.quantity}</span>
+                            <button class="qty-btn" data-action="increase" data-id="${item.id}"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="item-subtotal"><small>$</small>${subtotal}</div>
+                        <button class="remove-btn" data-action="remove" data-id="${item.id}"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            `;
+        });
+        cartContainer.innerHTML = html;
+        updateSummary(calcTotal());
+
+        document.querySelectorAll('.item-card .thumb').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const placeholder = document.createElement('div');
+                placeholder.className = 'thumb-placeholder';
+                placeholder.innerHTML = '<i class="fa-solid fa-box"></i>';
+                this.parentNode.insertBefore(placeholder, this);
+            });
+        });
+    }
+
+    function updateSummary(total) {
+        totalPriceEl.innerHTML = `<small>$</small>${total}`;
+    }
+
+    // ============================================================
+    //  購物車事件
+    // ============================================================
+    cartContainer.addEventListener('click', function(e) {
+        const target = e.target.closest('button');
+        if (!target) return;
+        const action = target.dataset.action;
+        const id = parseInt(target.dataset.id, 10);
+        if (isNaN(id)) return;
+
+        if (action === 'increase') {
+            let item = cart.find(i => i.id === id);
+            if (item) item.quantity += 1;
+            renderCart();
+        } else if (action === 'decrease') {
+            let item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity -= 1;
+                if (item.quantity < 0) item.quantity = 0;
+            }
+            renderCart();
+        } else if (action === 'remove') {
+            let item = cart.find(i => i.id === id);
+            if (item) item.quantity = 0;
+            renderCart();
+        }
+        cartBadge.textContent = calcTotalItems();
+    });
+
+    function clearCart() {
+        cart.forEach(item => { item.quantity = 0; });
+        renderCart();
+        cartBadge.textContent = 0;
+    }
+
+    clearCartBtn.addEventListener('click', function() {
+        if (calcTotalItems() === 0) return;
+        if (confirm('確定要清空購物車嗎？')) clearCart();
+    });
+
+    // ============================================================
+    //  結帳
+    // ============================================================
+    checkoutBtn.addEventListener('click', function() {
+        const user = getCurrentUser();
+        if (!user) {
+            alert('⚠️ 請先登入才能結帳！');
+            openModal('login');
+            return;
+        }
+
+        const activeItems = getActiveCart();
+        if (activeItems.length === 0) {
+            alert('購物車是空的！');
+            return;
+        }
+
+        const address = prompt('請輸入收件地址：', user.addresses?.[0] || '');
+        if (address === null) return;
+
+        const order = createOrder(user, activeItems, address || user.addresses?.[0]);
+        cart.forEach(item => { item.quantity = 0; });
+        renderCart();
+        cartBadge.textContent = 0;
+
+        alert(`✅ 訂單已建立！\n訂單編號：${order.id}\n總金額：$ ${order.total}\n將於 1-3 個工作天出貨。`);
+        renderOrders();
+        tabBtns.forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-tab="tabOrders"]').classList.add('active');
+        tabContents.forEach(c => c.classList.remove('active'));
+        $('tabOrders').classList.add('active');
+        renderOrders();
+    });
+
+    // ============================================================
+    //  渲染：訂單
+    // ============================================================
+    function renderOrders() {
+        const user = getCurrentUser();
+        
+        if (!user) {
+            orderList.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-lock"></i>
+                    <p>請先登入查看您的訂單</p>
+                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('loginBtn').click()" style="margin-top:0.8rem;">
+                        <i class="fas fa-sign-in-alt"></i> 前往登入
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        const orders = getUserOrders(user.id, user);
+
+        if (orders.length === 0) {
+            orderList.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-box"></i>
+                    <p>${isAdmin(user) ? '目前沒有任何訂單' : '您目前尚無訂單'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        const statusMap = {
+            'pending': '待處理',
+            'processing': '處理中',
+            'shipped': '已出貨',
+            'delivered': '已送達',
+            'cancelled': '已取消'
+        };
+        const statusClass = {
+            'pending': 'status-pending',
+            'processing': 'status-processing',
+            'shipped': 'status-shipped',
+            'delivered': 'status-delivered',
+            'cancelled': 'status-cancelled'
+        };
+
+        let html = '';
+        orders.forEach(order => {
+            const itemsStr = order.items.map(i => `${i.name} x${i.quantity}`).join('、');
+            const statusText = statusMap[order.status] || order.status;
+            const isAdminUser = isAdmin(user);
+            
+            html += `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">${order.id}</span>
+                        <span class="order-date">${new Date(order.createdAt).toLocaleString('zh-TW')}</span>
+                        <span class="order-status ${statusClass[order.status] || 'status-pending'}">${statusText}</span>
+                    </div>
+                    ${isAdminUser ? `<div class="order-user-info">👤 ${order.userName} (📱${order.userPhone})</div>` : ''}
+                    <div class="order-items">📦 ${itemsStr}</div>
+                    <div class="order-address">📍 ${order.address}</div>
+                    <div class="order-total">總計：$ ${order.total}</div>
+                    <div class="order-actions">
+                        ${isAdminUser ? `
+                            ${order.status === 'pending' ? `<button class="btn btn-warning btn-xs status-update" data-id="${order.id}" data-status="processing">改為處理中</button>` : ''}
+                            ${order.status === 'processing' ? `<button class="btn btn-primary btn-xs status-update" data-id="${order.id}" data-status="shipped">改為已出貨</button>` : ''}
+                            ${order.status === 'shipped' ? `<button class="btn btn-success btn-xs status-update" data-id="${order.id}" data-status="delivered">改為已送達</button>` : ''}
+                            ${['pending', 'processing'].includes(order.status) ? `<button class="btn btn-danger btn-xs status-update" data-id="${order.id}" data-status="cancelled">取消訂單</button>` : ''}
+                        ` : `
+                            <span style="font-size:0.8rem;color:#5f7c9a;">🔒 訂單狀態由管理員更新</span>
+                        `}
+                    </div>
+                </div>
+            `;
+        });
+        orderList.innerHTML = html;
+
+        document.querySelectorAll('.status-update').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const orderId = this.dataset.id;
+                const status = this.dataset.status;
+                const currentUser = getCurrentUser();
+                
+                const result = updateOrderStatus(orderId, status, currentUser);
+                if (result.success) {
+                    alert(`✅ 訂單 ${orderId} 狀態已更新為「${statusMap[status] || status}」`);
+                    renderOrders();
+                    renderStats();
+                    renderMemberManagement();
+                } else {
+                    alert('⚠️ ' + result.message);
+                }
+            });
+        });
+    }
+
+    // ============================================================
+    //  渲染：會員資料
+    // ============================================================
+    function renderProfile() {
+        const user = getCurrentUser();
+        if (!user) {
+            addressList.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-lock"></i>
+                    <p>請先登入查看會員資料</p>
+                </div>
+            `;
+            orderHistoryList.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-lock"></i>
+                    <p>請先登入查看訂單歷史</p>
+                </div>
+            `;
+            editProfileContainer.style.display = 'none';
+            return;
+        }
+
+        editProfileContainer.style.display = 'block';
+        editName.value = user.name || '';
+        editPhone.value = user.phone || '';
+        editPassword.value = '';
+        editPasswordConfirm.value = '';
+        editProfileMessage.style.display = 'none';
+
+        const addresses = user.addresses || [];
+        if (addresses.length === 0) {
+            addressList.innerHTML = `<p style="color:#5f7c9a;">尚無儲存地址</p>`;
+        } else {
+            let html = '';
+            addresses.forEach((addr, idx) => {
+                const isDefault = idx === 0;
+                html += `
+                    <div class="address-item">
+                        <span>${addr}</span>
+                        <div class="address-actions">
+                            ${!isDefault ? `<button class="set-default-btn" data-index="${idx}" title="設為預設"><i class="fas fa-star"></i></button>` : ''}
+                            <button class="delete-addr-btn" data-index="${idx}" title="刪除地址"><i class="fas fa-trash-alt"></i></button>
+                            ${isDefault ? '<span class="default-badge">預設</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            addressList.innerHTML = html;
+
+            document.querySelectorAll('.delete-addr-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    deleteAddress(user, index);
+                });
+            });
+
+            document.querySelectorAll('.set-default-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    setDefaultAddress(user, index);
+                });
+            });
+        }
+
+        const orders = getUserOrders(user.id, user);
+        if (orders.length === 0) {
+            orderHistoryList.innerHTML = `<p style="color:#5f7c9a;">尚無訂單紀錄</p>`;
+        } else {
+            let html = '';
+            orders.slice(0, 10).forEach(order => {
+                const statusMap = {
+                    'pending': '待處理', 'processing': '處理中', 'shipped': '已出貨',
+                    'delivered': '已送達', 'cancelled': '已取消'
+                };
+                html += `
+                    <div class="order-history-item">
+                        <span>${order.id}</span>
+                        <span>${statusMap[order.status] || order.status}</span>
+                        <span>$ ${order.total}</span>
+                    </div>
+                `;
+            });
+            orderHistoryList.innerHTML = html;
+        }
+    }
+
+    // ============================================================
+    //  儲存個人資料
+    // ============================================================
+    saveProfileBtn.addEventListener('click', function() {
+        const user = getCurrentUser();
+        if (!user) {
+            alert('請先登入！');
+            return;
+        }
+
+        const name = editName.value.trim();
+        const password = editPassword.value.trim();
+        const passwordConfirm = editPasswordConfirm.value.trim();
+
+        if (!name) {
+            showEditMessage('請輸入姓名！', 'error');
+            return;
+        }
+
+        if (password && password.length < 6) {
+            showEditMessage('密碼至少 6 個字元！', 'error');
+            return;
+        }
+
+        if (password && password !== passwordConfirm) {
+            showEditMessage('兩次輸入的密碼不一致！', 'error');
+            return;
+        }
+
+        const members = getMembers();
+        const member = members.find(m => m.id === user.id);
+        if (!member) {
+            showEditMessage('會員資料不存在！', 'error');
+            return;
+        }
+
+        member.name = name;
+        if (password) {
+            member.password = password;
+        }
+
+        saveMembers(members);
+        setCurrentUser(member);
+
+        showEditMessage('✅ 個人資料已更新！', 'success');
+        updateUserUI();
+        renderProfile();
+
+        editPassword.value = '';
+        editPasswordConfirm.value = '';
+    });
+
+    function showEditMessage(msg, type) {
+        const el = editProfileMessage;
+        el.textContent = msg;
+        el.style.color = type === 'error' ? '#c53e3e' : '#1e7a5e';
+        el.style.display = 'block';
+        setTimeout(() => {
+            el.style.display = 'none';
+        }, 4000);
+    }
+
+    cancelEditBtn.addEventListener('click', function() {
+        const user = getCurrentUser();
+        if (user) {
+            editName.value = user.name || '';
+            editPhone.value = user.phone || '';
+            editPassword.value = '';
+            editPasswordConfirm.value = '';
+            editProfileMessage.style.display = 'none';
+        }
+    });
+
+    // ============================================================
+    //  新增地址
+    // ============================================================
+    addAddressBtn.addEventListener('click', function() {
+        const user = getCurrentUser();
+        if (!user) {
+            alert('請先登入！');
+            return;
+        }
+        const addr = newAddressInput.value.trim();
+        if (!addr) {
+            alert('請輸入地址');
+            return;
+        }
+        const members = getMembers();
+        const member = members.find(m => m.id === user.id);
+        if (member) {
+            if (!member.addresses) member.addresses = [];
+            member.addresses.push(addr);
+            saveMembers(members);
+            setCurrentUser(member);
+            newAddressInput.value = '';
+            renderProfile();
+            alert('✅ 地址已新增！');
+        }
+    });
+
+    // ============================================================
+    //  會員 UI 更新
+    // ============================================================
+    function updateUserUI() {
+        const user = getCurrentUser();
+        if (user) {
+            const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+            userAvatar.textContent = initial;
+            userNameDisplay.innerHTML = `<strong>${user.name}</strong>`;
+            userPhoneDisplay.textContent = `📱 ${user.phone}`;
+            userPhoneDisplay.style.display = 'inline';
+            
+            if (isAdmin(user)) {
+                userRoleBadge.textContent = '👑 管理員';
+                userRoleBadge.className = 'user-role-badge admin';
+                userRoleBadge.style.display = 'inline';
+            } else {
+                userRoleBadge.textContent = '會員';
+                userRoleBadge.className = 'user-role-badge';
+                userRoleBadge.style.display = 'inline';
+            }
+            
+            logoutBtn.style.display = 'inline-block';
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+        } else {
+            userAvatar.textContent = '遊';
+            userNameDisplay.innerHTML = `<span class="guest-text">訪客</span>`;
+            userPhoneDisplay.textContent = '';
+            userPhoneDisplay.style.display = 'none';
+            userRoleBadge.style.display = 'none';
+            logoutBtn.style.display = 'none';
+            loginBtn.style.display = 'inline-flex';
+            registerBtn.style.display = 'inline-flex';
+        }
+        updateTabs();
+        if ($('tabProducts') && $('tabProducts').classList.contains('active')) renderProducts();
+        if ($('tabOrders') && $('tabOrders').classList.contains('active')) renderOrders();
+        if ($('tabMembers') && $('tabMembers').classList.contains('active')) renderMemberManagement();
+        if ($('tabStats') && $('tabStats').classList.contains('active')) renderStats();
+        if ($('tabProfile') && $('tabProfile').classList.contains('active')) renderProfile();
+        cartBadge.textContent = calcTotalItems();
+    }
+
+    // ============================================================
+    //  模態框
+    // ============================================================
+    function openModal(mode) {
+        renderModalContent(mode);
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function renderModalContent(mode) {
+        if (mode === 'login') {
+            modalContent.innerHTML = `
+                <h2 class="modal-title"><i class="fas fa-sign-in-alt" style="color:#2a7de1;"></i> 登入</h2>
+                <p class="modal-subtitle">歡迎回來！請輸入您的電話號碼</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>電話號碼</label>
+                        <input type="tel" id="loginPhone" placeholder="請輸入您的電話號碼" required />
+                    </div>
+                    <div class="form-group">
+                        <label>密碼</label>
+                        <input type="password" id="loginPassword" placeholder="輸入密碼" required />
+                    </div>
+                    <div class="form-error" id="loginError"></div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.8rem;">
+                        <i class="fas fa-sign-in-alt"></i> 登入
+                    </button>
+                </form>
+                <div class="modal-footer-text">
+                    還沒有帳號？ <a id="switchToRegister">立即註冊</a>
+                </div>
+                <div class="modal-footer-text" style="margin-top:0.5rem;font-size:0.8rem;color:#8aa3bf;">
+                    管理員帳號：7294 / 密碼：0904
+                </div>
+            `;
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('switchToRegister').addEventListener('click', function() {
+                renderModalContent('register');
+            });
+        } else {
+            modalContent.innerHTML = `
+                <h2 class="modal-title"><i class="fas fa-user-plus" style="color:#1e7a5e;"></i> 註冊</h2>
+                <p class="modal-subtitle">建立帳號，開始購物！</p>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" id="regName" placeholder="請輸入您的姓名" required />
+                    </div>
+                    <div class="form-group">
+                        <label>電話號碼</label>
+                        <input type="tel" id="regPhone" placeholder="請輸入您的電話號碼（作為登入帳號）" required />
+                    </div>
+                    <div class="form-group">
+                        <label>密碼</label>
+                        <input type="password" id="regPassword" placeholder="至少 6 個字元" required minlength="6" />
+                    </div>
+                    <div class="form-error" id="registerError"></div>
+                    <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;padding:0.8rem;">
+                        <i class="fas fa-user-plus"></i> 註冊
+                    </button>
+                </form>
+                <div class="modal-footer-text">
+                    已有帳號？ <a id="switchToLogin">返回登入</a>
+                </div>
+            `;
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            document.getElementById('switchToLogin').addEventListener('click', function() {
+                renderModalContent('login');
+            });
+        }
+    }
+
+    // ============================================================
+    //  登入 / 註冊 處理
+    // ============================================================
+    function handleLogin(e) {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const errorEl = document.getElementById('loginError');
+
+        if (!phone || !password) {
+            errorEl.textContent = '請填寫完整資料';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        const result = loginUser(phone, password);
+        if (!result.success) {
+            errorEl.textContent = result.message;
+            errorEl.classList.add('show');
+            return;
+        }
+
+        errorEl.classList.remove('show');
+        setCurrentUser(result.user);
+        updateUserUI();
+        closeModal();
+        renderOrders();
+        renderProfile();
+        renderStats();
+        renderMemberManagement();
+    }
+
+    function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const errorEl = document.getElementById('registerError');
+
+        if (!name || !phone || !password) {
+            errorEl.textContent = '請填寫完整資料';
+            errorEl.classList.add('show');
+            return;
+        }
+        if (password.length < 6) {
+            errorEl.textContent = '密碼至少 6 個字元';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        const result = registerUser(phone, password, name);
+        if (!result.success) {
+            errorEl.textContent = result.message;
+            errorEl.classList.add('show');
+            return;
+        }
+
+        errorEl.classList.remove('show');
+        setCurrentUser(result.user);
+        updateUserUI();
+        closeModal();
+        alert(`🎉 註冊成功！歡迎 ${result.user.name}！（電話：${result.user.phone}）`);
+        renderOrders();
+        renderProfile();
+        renderStats();
+        renderMemberManagement();
+    }
+
+    // ============================================================
+    //  登出
+    // ============================================================
+    logoutBtn.addEventListener('click', function() {
+        if (confirm('確定要登出嗎？')) {
+            clearCurrentUser();
+            updateUserUI();
+            renderOrders();
+            renderProfile();
+            renderStats();
+            renderMemberManagement();
+            tabBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-tab="tabProducts"]').classList.add('active');
+            tabContents.forEach(c => c.classList.remove('active'));
+            $('tabProducts').classList.add('active');
+        }
+    });
+
+    // ============================================================
+    //  模態框控制
+    // ============================================================
+    loginBtn.addEventListener('click', function() { openModal('login'); });
+    registerBtn.addEventListener('click', function() { openModal('register'); });
+    modalCloseBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // ============================================================
+    //  初始化
+    // ============================================================
+    renderProducts();
+    renderCart();
+    cartBadge.textContent = calcTotalItems();
+    updateUserUI();
+    renderOrders();
+    renderProfile();
+    renderStats();
+    renderMemberManagement();
+
+})();
+</script>
+
+</body>
+</html>
