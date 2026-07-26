@@ -1222,11 +1222,26 @@ async function createOrder(uid, userData, cartItems, address) {
 
 async function loadOrders(uid) {
     try {
-        let query = db.collection('orders').orderBy('createdAt', 'desc');
-        // 非管理員只看自己的訂單
-        if (!currentUserData || currentUserData.role !== 'admin') {
-            query = query.where('userId', '==', uid);
+        // 先確認當前使用者
+        const user = auth.currentUser;
+        if (!user) {
+            orders = [];
+            renderOrders();
+            return;
         }
+
+        // 取得當前會員資料
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const userData = userDoc.exists ? userDoc.data() : null;
+        const isAdmin = userData && userData.role === 'admin';
+
+        let query = db.collection('orders').orderBy('createdAt', 'desc');
+        
+        // 非管理員只查自己的訂單
+        if (!isAdmin) {
+            query = query.where('userId', '==', user.uid);
+        }
+        
         const snapshot = await query.get();
         orders = [];
         snapshot.forEach(doc => {
@@ -1504,17 +1519,27 @@ function renderOrders() {
     }
 
     const statusMap = {
-        'pending': '待處理', 'processing': '處理中', 'shipped': '已出貨',
-        'delivered': '已送達', 'cancelled': '已取消'
+        'pending': '待處理',
+        'processing': '處理中',
+        'shipped': '已出貨',
+        'delivered': '已送達',
+        'cancelled': '已取消'
     };
     const statusClass = {
-        'pending': 'status-pending', 'processing': 'status-processing',
-        'shipped': 'status-shipped', 'delivered': 'status-delivered',
+        'pending': 'status-pending',
+        'processing': 'status-processing',
+        'shipped': 'status-shipped',
+        'delivered': 'status-delivered',
         'cancelled': 'status-cancelled'
     };
 
     let html = '';
     orders.forEach(order => {
+        // 再次確認：非管理員只能看自己的訂單
+        if (currentUserData?.role !== 'admin' && order.userId !== currentUser.uid) {
+            return;
+        }
+        
         const itemsStr = order.items.map(i => `${i.name} x${i.quantity}`).join('、');
         const statusText = statusMap[order.status] || order.status;
         const isAdmin = currentUserData?.role === 'admin';
@@ -1561,7 +1586,7 @@ function renderOrders() {
         });
     });
 }
-
+    
 async function renderMemberManagement() {
     const isAdmin = currentUserData?.role === 'admin';
     if (!currentUser || !isAdmin) {
