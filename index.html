@@ -1223,6 +1223,7 @@ async function createOrder(uid, userData, cartItems, address) {
 async function loadOrders(uid) {
     try {
         let query = db.collection('orders').orderBy('createdAt', 'desc');
+        // 非管理員只看自己的訂單
         if (!currentUserData || currentUserData.role !== 'admin') {
             query = query.where('userId', '==', uid);
         }
@@ -1238,7 +1239,7 @@ async function loadOrders(uid) {
         renderOrders();
     }
 }
-
+    
 async function updateOrderStatus(orderId, status) {
     try {
         await db.collection('orders').doc(orderId).update({
