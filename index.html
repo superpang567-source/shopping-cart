@@ -477,8 +477,10 @@ async function loadProducts() {
             products.push({ id: parseInt(doc.id), ...doc.data() });
         });
         renderProducts();
+        return products;
     } catch (error) {
         console.error('讀取商品失敗:', error);
+        return [];
     }
 }
 
@@ -581,12 +583,10 @@ async function saveCart(uid) {
     }
 }
 
-// ===== 重點：建立訂單時確保 userId 正確 =====
 async function createOrder(uid, userData, cartItems, address) {
     try {
-        // 確保 uid 正確傳入
         const order = {
-            userId: uid,  // ← 這個必須是當前使用者的 UID
+            userId: uid,
             userName: userData.name,
             userEmail: userData.email,
             items: cartItems.map(item => ({
@@ -611,13 +611,10 @@ async function createOrder(uid, userData, cartItems, address) {
     }
 }
 
-// ===== 重點：讀取訂單時只讀取自己的 =====
 async function loadOrders(uid) {
     try {
         console.log('🔍 讀取訂單，使用者 UID:', uid);
-        console.log('🔍 當前會員角色:', currentUserData?.role);
         
-        // 先確認是否有 currentUser
         if (!uid) {
             console.warn('⚠️ 沒有 UID，無法讀取訂單');
             orders = [];
@@ -627,7 +624,6 @@ async function loadOrders(uid) {
 
         let query = db.collection('orders').orderBy('createdAt', 'desc');
         
-        // 非管理員只查自己的訂單
         if (currentUserData?.role !== 'admin') {
             query = query.where('userId', '==', uid);
             console.log('🔍 一般會員：只查自己的訂單 (userId =', uid, ')');
@@ -722,8 +718,8 @@ function renderProducts() {
     const grid = document.getElementById('productGrid');
     const isAdmin = currentUserData?.role === 'admin';
 
-    if (products.length === 0) {
-        grid.innerHTML = `<div class="empty-cart"><i class="fas fa-box"></i><p>暫無商品</p></div>`;
+    if (!products || products.length === 0) {
+        grid.innerHTML = `<div class="empty-cart"><i class="fas fa-spinner fa-spin"></i><p>載入商品中...</p></div>`;
         return;
     }
 
@@ -868,7 +864,6 @@ document.getElementById('clearCartBtn').addEventListener('click', async function
     }
 });
 
-// ===== 重點：結帳時確認 uid 正確 =====
 document.getElementById('checkoutBtn').addEventListener('click', async function() {
     if (!currentUser) {
         alert('⚠️ 請先登入才能結帳！');
@@ -885,7 +880,6 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
     const address = prompt('請輸入收件地址：', currentUserData?.addresses?.[0] || '');
     if (address === null) return;
 
-    // 確保使用 currentUser.uid
     const result = await createOrder(currentUser.uid, currentUserData, activeItems, address);
     if (result.success) {
         cart.forEach(item => { item.quantity = 0; });
@@ -893,7 +887,6 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
         document.getElementById('cartBadge').textContent = 0;
         if (currentUser) await saveCart(currentUser.uid);
         alert(`✅ 訂單已建立！\n訂單編號：${result.orderId}\n總金額：$ ${result.order.total}\n將於 1-3 個工作天出貨。`);
-        // 重新載入訂單
         await loadOrders(currentUser.uid);
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelector('[data-tab="tabOrders"]').classList.add('active');
@@ -904,7 +897,6 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
     }
 });
 
-// ===== 重點：渲染訂單時再次過濾 =====
 function renderOrders() {
     const container = document.getElementById('orderList');
     
@@ -913,7 +905,6 @@ function renderOrders() {
         return;
     }
 
-    // 再次過濾：非管理員只顯示自己的訂單
     let displayOrders = orders;
     if (currentUserData?.role !== 'admin') {
         displayOrders = orders.filter(o => o.userId === currentUser.uid);
@@ -1347,13 +1338,23 @@ document.getElementById('addAddressBtn').addEventListener('click', async functio
 
 auth.onAuthStateChanged(async function(user) {
     console.log('🔐 認證狀態變更:', user ? '已登入 - ' + user.uid : '未登入');
+    
     if (user) {
         currentUser = user;
         currentUserData = await loadUserData(user.uid);
         console.log('👤 會員資料:', currentUserData);
+        
+        // 載入購物車
         await loadCart(user.uid);
-        // 讀取訂單時傳入 user.uid
+        
+        // 載入訂單
         await loadOrders(user.uid);
+        
+        // 確保商品已載入
+        if (products.length === 0) {
+            await loadProducts();
+        }
+        
         await updateUserUI();
         await renderStats();
         await renderMemberManagement();
@@ -1363,6 +1364,12 @@ auth.onAuthStateChanged(async function(user) {
         currentUserData = null;
         cart = [];
         orders = [];
+        
+        // 仍要顯示商品
+        if (products.length === 0) {
+            await loadProducts();
+        }
+        
         await updateUserUI();
         renderCart();
         renderOrders();
@@ -1611,21 +1618,26 @@ document.getElementById('loginBtn').addEventListener('click', function() { openM
 document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
 
 // ============================================================
-//  初始化
+//  初始化 - 先載入商品再處理認證
 // ============================================================
 async function init() {
     console.log('🚀 購物系統初始化...');
-    await initProducts();
+    
+    // 先載入商品（無論是否登入都要顯示）
+    await loadProducts();
+    
+    // 渲染購物車
     renderCart();
     document.getElementById('cartBadge').textContent = calcTotalItems();
+    
     console.log('✅ 初始化完成');
 }
 
+// 啟動
 init();
 
 console.log('🔑 管理員帳號請在 Firebase Authentication 手動建立');
 console.log('📌 或註冊後在 Firestore 的 users 集合將 role 改為 admin');
-console.log('📌 一般會員登入後，訂單頁面應該只顯示自己的訂單');
 </script>
 </body>
 </html>
