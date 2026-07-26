@@ -12,115 +12,22 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background: #f0f4fa;
-            min-height: 100vh;
-            padding: 1.5rem;
-        }
-        .app-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.25);
-            padding: 2rem;
-        }
-        .navbar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 1.2rem;
-            border-bottom: 2px solid #eef2f7;
-            margin-bottom: 1.8rem;
-            gap: 0.8rem;
-        }
-        .navbar-brand {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0b1e2e;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f0f4fa; min-height: 100vh; padding: 1.5rem; }
+        .app-wrapper { max-width: 1200px; margin: 0 auto; background: #ffffff; border-radius: 32px; box-shadow: 0 20px 40px -12px rgba(0,20,30,0.25); padding: 2rem; }
+        .navbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding-bottom: 1.2rem; border-bottom: 2px solid #eef2f7; margin-bottom: 1.8rem; gap: 0.8rem; }
+        .navbar-brand { font-size: 1.6rem; font-weight: 700; color: #0b1e2e; display: flex; align-items: center; gap: 10px; }
         .navbar-brand i { color: #2a7de1; }
-        .cloud-badge {
-            font-size: 0.7rem;
-            color: #1e7a5e;
-            background: #e8f5ee;
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-        }
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-        }
-        .user-status {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            background: #f2f7fd;
-            padding: 0.2rem 1rem 0.2rem 0.6rem;
-            border-radius: 40px;
-            border: 1px solid #dde6f0;
-        }
-        .user-avatar {
-            width: 34px;
-            height: 34px;
-            background: #2a7de1;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        .user-name {
-            font-weight: 500;
-            color: #1a3b5c;
-            font-size: 0.9rem;
-        }
-        .user-name .guest-text {
-            color: #7a94b0;
-            font-weight: 400;
-        }
-        .user-email {
-            font-size: 0.75rem;
-            color: #5f7c9a;
-            background: #eaf0f8;
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-        }
-        .user-role-badge {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.1rem 0.5rem;
-            border-radius: 20px;
-            background: #d4a12a;
-            color: white;
-        }
+        .cloud-badge { font-size: 0.7rem; color: #1e7a5e; background: #e8f5ee; padding: 0.1rem 0.6rem; border-radius: 20px; }
+        .navbar-right { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        .user-status { display: flex; align-items: center; gap: 0.6rem; background: #f2f7fd; padding: 0.2rem 1rem 0.2rem 0.6rem; border-radius: 40px; border: 1px solid #dde6f0; }
+        .user-avatar { width: 34px; height: 34px; background: #2a7de1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem; }
+        .user-name { font-weight: 500; color: #1a3b5c; font-size: 0.9rem; }
+        .user-name .guest-text { color: #7a94b0; font-weight: 400; }
+        .user-email { font-size: 0.75rem; color: #5f7c9a; background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; }
+        .user-role-badge { font-size: 0.7rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 20px; background: #d4a12a; color: white; }
         .user-role-badge.admin { background: #c53e3e; }
-        .btn {
-            padding: 0.5rem 1.2rem;
-            border: none;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.15s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .btn { padding: 0.5rem 1.2rem; border: none; border-radius: 60px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; }
         .btn-primary { background: #1a4d7a; color: white; }
         .btn-primary:hover { background: #0f3b60; transform: scale(0.97); }
         .btn-outline { background: transparent; color: #1d3f5e; border: 1px solid #b6c9dd; }
@@ -133,281 +40,56 @@
         .btn-warning:hover { background: #b8891a; }
         .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
         .btn-xs { padding: 0.15rem 0.6rem; font-size: 0.7rem; }
-        .btn-logout {
-            background: transparent;
-            border: none;
-            color: #a54a4a;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-        }
+        .btn-logout { background: transparent; border: none; color: #a54a4a; cursor: pointer; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 20px; }
         .btn-logout:hover { background: #ffe8e8; }
-        .btn-danger-outline {
-            background: transparent;
-            border: 1px solid #f0ced0;
-            color: #a54a4a;
-        }
+        .btn-danger-outline { background: transparent; border: 1px solid #f0ced0; color: #a54a4a; }
         .btn-danger-outline:hover { background: #ffe8e8; }
-        .tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.8rem;
-            flex-wrap: wrap;
-            border-bottom: 2px solid #eef2f7;
-            padding-bottom: 0.5rem;
-        }
-        .tab-btn {
-            padding: 0.5rem 1.5rem;
-            border: none;
-            background: transparent;
-            font-weight: 600;
-            color: #5f7c9a;
-            cursor: pointer;
-            border-radius: 40px;
-            transition: 0.15s;
-            font-size: 0.95rem;
-        }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.8rem; flex-wrap: wrap; border-bottom: 2px solid #eef2f7; padding-bottom: 0.5rem; }
+        .tab-btn { padding: 0.5rem 1.5rem; border: none; background: transparent; font-weight: 600; color: #5f7c9a; cursor: pointer; border-radius: 40px; transition: 0.15s; font-size: 0.95rem; }
         .tab-btn:hover { background: #eef4fa; }
         .tab-btn.active { background: #1a4d7a; color: white; }
         .tab-btn.hidden { display: none; }
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .product-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 1rem 1rem 1.2rem;
-            text-align: center;
-            border: 1px solid #eaeef3;
-            transition: 0.2s;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-            border-color: #c5d5e8;
-        }
-        .product-card .product-image {
-            width: 100%;
-            height: 160px;
-            border-radius: 14px;
-            object-fit: cover;
-            background: #f0f4fa;
-            margin-bottom: 0.6rem;
-        }
-        .product-card .product-image-placeholder {
-            width: 100%;
-            height: 160px;
-            border-radius: 14px;
-            background: #e8effa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: #b0c8e0;
-            margin-bottom: 0.6rem;
-        }
-        .product-card .name {
-            font-weight: 600;
-            font-size: 1.05rem;
-            color: #0b1e2e;
-            margin-bottom: 0.2rem;
-        }
-        .product-card .desc {
-            font-size: 0.82rem;
-            color: #6a8aaa;
-            margin-bottom: 0.4rem;
-            line-height: 1.4;
-            height: 2.6rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-        .product-card .price {
-            color: #1a4d7a;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin: 0.2rem 0 0.6rem;
-        }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .product-card { background: #ffffff; border-radius: 20px; padding: 1rem 1rem 1.2rem; text-align: center; border: 1px solid #eaeef3; transition: 0.2s; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: #c5d5e8; }
+        .product-card .product-image { width: 100%; height: 160px; border-radius: 14px; object-fit: cover; background: #f0f4fa; margin-bottom: 0.6rem; }
+        .product-card .product-image-placeholder { width: 100%; height: 160px; border-radius: 14px; background: #e8effa; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #b0c8e0; margin-bottom: 0.6rem; }
+        .product-card .name { font-weight: 600; font-size: 1.05rem; color: #0b1e2e; margin-bottom: 0.2rem; }
+        .product-card .desc { font-size: 0.82rem; color: #6a8aaa; margin-bottom: 0.4rem; line-height: 1.4; height: 2.6rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .product-card .price { color: #1a4d7a; font-weight: 700; font-size: 1.2rem; margin: 0.2rem 0 0.6rem; }
         .product-card .btn { width: 100%; justify-content: center; }
-        .product-card .delete-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #f8d7da;
-            border: none;
-            color: #721c24;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: 0.15s;
-            z-index: 2;
-        }
+        .product-card .delete-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #f8d7da; border: none; color: #721c24; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.15s; z-index: 2; }
         .product-card .delete-btn:hover { background: #c53e3e; color: white; }
-        .cart-items {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-            min-height: 80px;
-        }
-        .item-card {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            background: #f9fbfd;
-            border-radius: 16px;
-            padding: 0.5rem 1rem;
-            border: 1px solid #eaeef3;
-            gap: 0.5rem;
-        }
-        .item-info {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            flex: 2 1 150px;
-        }
-        .item-info .thumb {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            object-fit: cover;
-            background: #e0e9f5;
-            flex-shrink: 0;
-        }
-        .item-info .thumb-placeholder {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: #e0e9f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8aaccc;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
+        .cart-items { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; min-height: 80px; }
+        .item-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: #f9fbfd; border-radius: 16px; padding: 0.5rem 1rem; border: 1px solid #eaeef3; gap: 0.5rem; }
+        .item-info { display: flex; align-items: center; gap: 0.8rem; flex: 2 1 150px; }
+        .item-info .thumb { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: #e0e9f5; flex-shrink: 0; }
+        .item-info .thumb-placeholder { width: 44px; height: 44px; border-radius: 10px; background: #e0e9f5; display: flex; align-items: center; justify-content: center; color: #8aaccc; font-size: 1.2rem; flex-shrink: 0; }
         .item-info .name { font-weight: 600; font-size: 0.95rem; }
         .item-info .price { font-size: 0.8rem; color: #3b5a7a; }
-        .item-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-        }
-        .qty-wrapper {
-            display: flex;
-            align-items: center;
-            background: white;
-            border-radius: 30px;
-            border: 1px solid #d2dce8;
-            overflow: hidden;
-        }
-        .qty-btn {
-            background: #f4f8ff;
-            border: none;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
+        .item-controls { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        .qty-wrapper { display: flex; align-items: center; background: white; border-radius: 30px; border: 1px solid #d2dce8; overflow: hidden; }
+        .qty-btn { background: #f4f8ff; border: none; width: 30px; height: 30px; cursor: pointer; font-size: 0.9rem; }
         .qty-btn:hover { background: #dfe9f5; }
-        .qty-number {
-            min-width: 30px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.95rem;
-            background: white;
-        }
-        .item-subtotal {
-            font-weight: 600;
-            min-width: 60px;
-            text-align: right;
-            font-size: 0.95rem;
-        }
-        .remove-btn {
-            background: transparent;
-            border: none;
-            color: #9aafc7;
-            cursor: pointer;
-            padding: 0 4px;
-        }
+        .qty-number { min-width: 30px; text-align: center; font-weight: 600; font-size: 0.95rem; background: white; }
+        .item-subtotal { font-weight: 600; min-width: 60px; text-align: right; font-size: 0.95rem; }
+        .remove-btn { background: transparent; border: none; color: #9aafc7; cursor: pointer; padding: 0 4px; }
         .remove-btn:hover { color: #c53e3e; }
-        .empty-cart {
-            text-align: center;
-            padding: 2rem;
-            color: #5f7c9a;
-        }
+        .empty-cart { text-align: center; padding: 2rem; color: #5f7c9a; }
         .empty-cart i { font-size: 2.5rem; color: #b8ccdf; }
-        .cart-summary {
-            background: #f2f7fd;
-            border-radius: 20px;
-            padding: 1rem 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid #dfe8f2;
-            gap: 0.8rem;
-        }
-        .total-price {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0a253b;
-        }
+        .cart-summary { background: #f2f7fd; border-radius: 20px; padding: 1rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; border: 1px solid #dfe8f2; gap: 0.8rem; }
+        .total-price { font-size: 1.6rem; font-weight: 700; color: #0a253b; }
         .total-price small { font-size: 1rem; font-weight: 400; color: #4a6d8f; }
-        .badge {
-            background: #eaf0f8;
-            padding: 0.1rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            color: #1a3b5c;
-        }
-        .order-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .order-card {
-            background: #f9fbfd;
-            border-radius: 16px;
-            padding: 1rem 1.2rem;
-            border: 1px solid #eaeef3;
-        }
-        .order-header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.6rem;
-        }
+        .badge { background: #eaf0f8; padding: 0.1rem 0.8rem; border-radius: 30px; font-size: 0.8rem; color: #1a3b5c; }
+        .order-list { display: flex; flex-direction: column; gap: 1rem; }
+        .order-card { background: #f9fbfd; border-radius: 16px; padding: 1rem 1.2rem; border: 1px solid #eaeef3; }
+        .order-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
         .order-id { font-weight: 600; color: #0b1e2e; }
         .order-date { color: #5f7c9a; font-size: 0.85rem; }
-        .order-status {
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
+        .order-status { padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; }
         .status-pending { background: #fff3cd; color: #856404; }
         .status-processing { background: #cce5ff; color: #004085; }
         .status-shipped { background: #d4edda; color: #155724; }
@@ -416,87 +98,22 @@
         .order-items { font-size: 0.9rem; color: #1a3b5c; margin: 0.4rem 0; }
         .order-total { font-weight: 700; color: #0a253b; }
         .order-address { font-size: 0.85rem; color: #5f7c9a; margin-top: 0.3rem; }
-        .order-actions {
-            display: flex;
-            gap: 0.4rem;
-            flex-wrap: wrap;
-            margin-top: 0.6rem;
-        }
-        .order-user-info {
-            font-size: 0.8rem;
-            color: #5f7c9a;
-            background: #eaf0f8;
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        .member-stats {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.2rem;
-            padding: 0.8rem 1.2rem;
-            background: #f9fbfd;
-            border-radius: 12px;
-            border: 1px solid #eaeef3;
-        }
+        .order-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+        .order-user-info { font-size: 0.8rem; color: #5f7c9a; background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; display: inline-block; }
+        .member-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; padding: 0.8rem 1.2rem; background: #f9fbfd; border-radius: 12px; border: 1px solid #eaeef3; }
         .member-stats span { font-size: 0.9rem; color: #1a3b5c; }
         .member-stats strong { color: #0b1e2e; }
-        .member-table-wrap {
-            overflow-x: auto;
-            background: #f9fbfd;
-            border-radius: 16px;
-            border: 1px solid #eaeef3;
-            padding: 0.2rem;
-        }
-        .member-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            min-width: 600px;
-        }
-        .member-table th {
-            text-align: left;
-            padding: 0.7rem 1rem;
-            background: #eef3f8;
-            color: #1a3b5c;
-            font-weight: 600;
-            border-bottom: 2px solid #dce5ef;
-        }
-        .member-table td {
-            padding: 0.6rem 1rem;
-            border-bottom: 1px solid #eaeef3;
-            color: #0b1e2e;
-        }
+        .member-table-wrap { overflow-x: auto; background: #f9fbfd; border-radius: 16px; border: 1px solid #eaeef3; padding: 0.2rem; }
+        .member-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 600px; }
+        .member-table th { text-align: left; padding: 0.7rem 1rem; background: #eef3f8; color: #1a3b5c; font-weight: 600; border-bottom: 2px solid #dce5ef; }
+        .member-table td { padding: 0.6rem 1rem; border-bottom: 1px solid #eaeef3; color: #0b1e2e; }
         .member-table tr:hover td { background: #f2f6fc; }
-        .member-table .member-role {
-            font-size: 0.7rem;
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-            font-weight: 600;
-        }
+        .member-table .member-role { font-size: 0.7rem; padding: 0.1rem 0.6rem; border-radius: 20px; font-weight: 600; }
         .member-table .member-role.admin { background: #c53e3e; color: white; }
         .member-table .member-role.member { background: #d4a12a; color: white; }
-        .member-table .order-count {
-            background: #eaf0f8;
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-        }
-        .stats-dashboard {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 1.2rem 1rem;
-            text-align: center;
-            border: 1px solid #eaeef3;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-        }
+        .member-table .order-count { background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; font-size: 0.8rem; }
+        .stats-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #ffffff; border-radius: 16px; padding: 1.2rem 1rem; text-align: center; border: 1px solid #eaeef3; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
         .stat-card .stat-number { font-size: 2rem; font-weight: 700; color: #0b1e2e; }
         .stat-card .stat-label { font-size: 0.8rem; color: #5f7c9a; margin-top: 0.2rem; }
         .stat-card .stat-icon { font-size: 1.4rem; margin-bottom: 0.2rem; }
@@ -504,286 +121,62 @@
         .stat-card.pending .stat-icon { color: #d4a12a; }
         .stat-card.shipped .stat-icon { color: #1e7a5e; }
         .stat-card.cancelled .stat-icon { color: #c53e3e; }
-        .status-bars {
-            display: flex;
-            gap: 0.4rem;
-            height: 20px;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-            background: #eef2f7;
-        }
-        .status-bar {
-            height: 100%;
-            transition: width 0.5s ease;
-            border-radius: 0;
-        }
+        .status-bars { display: flex; gap: 0.4rem; height: 20px; border-radius: 12px; overflow: hidden; margin-top: 0.5rem; background: #eef2f7; }
+        .status-bar { height: 100%; transition: width 0.5s ease; border-radius: 0; }
         .status-bar.pending { background: #d4a12a; }
         .status-bar.processing { background: #2a7de1; }
         .status-bar.shipped { background: #1e7a5e; }
         .status-bar.delivered { background: #28a745; }
         .status-bar.cancelled { background: #c53e3e; }
-        .status-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem 1.5rem;
-            margin: 0.6rem 0 0.2rem;
-            font-size: 0.8rem;
-            color: #1a3b5c;
-        }
-        .status-legend .dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 4px;
-        }
-        .admin-product-form {
-            background: #f9fbfd;
-            border-radius: 16px;
-            padding: 1.2rem;
-            border: 1px solid #eaeef3;
-            margin-bottom: 1.5rem;
-        }
-        .admin-product-form .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr auto;
-            gap: 0.8rem;
-            align-items: flex-end;
-        }
+        .status-legend { display: flex; flex-wrap: wrap; gap: 0.8rem 1.5rem; margin: 0.6rem 0 0.2rem; font-size: 0.8rem; color: #1a3b5c; }
+        .status-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+        .admin-product-form { background: #f9fbfd; border-radius: 16px; padding: 1.2rem; border: 1px solid #eaeef3; margin-bottom: 1.5rem; }
+        .admin-product-form .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 0.8rem; align-items: flex-end; }
         .admin-product-form .form-row .form-group { margin-bottom: 0; }
-        .admin-product-form .form-row .form-group label {
-            font-size: 0.8rem;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-        .admin-product-form .form-row .form-group input {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.9rem;
-            width: 100%;
-            border: 1.5px solid #dce5ef;
-            border-radius: 10px;
-        }
-        .admin-product-form .form-row .form-group input:focus {
-            outline: none;
-            border-color: #2a7de1;
-        }
-        .admin-product-form .form-row .btn {
-            padding: 0.4rem 1.2rem;
-            height: 38px;
-            white-space: nowrap;
-        }
-        .profile-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-        .profile-card {
-            background: #f9fbfd;
-            border-radius: 16px;
-            padding: 1.2rem;
-            border: 1px solid #eaeef3;
-        }
-        .profile-card h3 {
-            font-size: 1rem;
-            color: #0b1e2e;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .admin-product-form .form-row .form-group label { font-size: 0.8rem; display: block; margin-bottom: 0.2rem; }
+        .admin-product-form .form-row .form-group input { padding: 0.4rem 0.8rem; font-size: 0.9rem; width: 100%; border: 1.5px solid #dce5ef; border-radius: 10px; }
+        .admin-product-form .form-row .form-group input:focus { outline: none; border-color: #2a7de1; }
+        .admin-product-form .form-row .btn { padding: 0.4rem 1.2rem; height: 38px; white-space: nowrap; }
+        .profile-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .profile-card { background: #f9fbfd; border-radius: 16px; padding: 1.2rem; border: 1px solid #eaeef3; }
+        .profile-card h3 { font-size: 1rem; color: #0b1e2e; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 8px; }
         .profile-card h3 i { color: #2a7de1; }
-        .address-item {
-            background: white;
-            padding: 0.5rem 0.8rem;
-            border-radius: 12px;
-            margin-bottom: 0.4rem;
-            border: 1px solid #eaeef3;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .address-item .default-badge {
-            background: #1e7a5e;
-            color: white;
-            font-size: 0.65rem;
-            padding: 0.1rem 0.5rem;
-            border-radius: 20px;
-        }
-        .address-item .address-actions {
-            display: flex;
-            gap: 0.3rem;
-        }
-        .address-item .address-actions button {
-            background: none;
-            border: none;
-            color: #9aafc7;
-            cursor: pointer;
-            padding: 0.1rem 0.3rem;
-            font-size: 0.8rem;
-            transition: 0.15s;
-            border-radius: 4px;
-        }
-        .address-item .address-actions .delete-addr-btn:hover {
-            color: #c53e3e;
-            background: #ffe8e8;
-        }
-        .address-item .address-actions .set-default-btn:hover {
-            color: #1e7a5e;
-            background: #e8f5ee;
-        }
-        .address-form {
-            display: flex;
-            gap: 0.4rem;
-            flex-wrap: wrap;
-            margin-top: 0.6rem;
-        }
-        .address-form input {
-            flex: 1;
-            padding: 0.4rem 0.8rem;
-            border: 1.5px solid #dce5ef;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            min-width: 120px;
-        }
-        .address-form input:focus {
-            outline: none;
-            border-color: #2a7de1;
-        }
-        .edit-profile-form {
-            background: white;
-            padding: 1rem 1.2rem;
-            border-radius: 14px;
-            border: 1px solid #eaeef3;
-            margin-bottom: 1.2rem;
-        }
-        .edit-profile-form .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.8rem;
-        }
+        .address-item { background: white; padding: 0.5rem 0.8rem; border-radius: 12px; margin-bottom: 0.4rem; border: 1px solid #eaeef3; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+        .address-item .default-badge { background: #1e7a5e; color: white; font-size: 0.65rem; padding: 0.1rem 0.5rem; border-radius: 20px; }
+        .address-item .address-actions { display: flex; gap: 0.3rem; }
+        .address-item .address-actions button { background: none; border: none; color: #9aafc7; cursor: pointer; padding: 0.1rem 0.3rem; font-size: 0.8rem; transition: 0.15s; border-radius: 4px; }
+        .address-item .address-actions .delete-addr-btn:hover { color: #c53e3e; background: #ffe8e8; }
+        .address-item .address-actions .set-default-btn:hover { color: #1e7a5e; background: #e8f5ee; }
+        .address-form { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+        .address-form input { flex: 1; padding: 0.4rem 0.8rem; border: 1.5px solid #dce5ef; border-radius: 10px; font-size: 0.85rem; min-width: 120px; }
+        .address-form input:focus { outline: none; border-color: #2a7de1; }
+        .edit-profile-form { background: white; padding: 1rem 1.2rem; border-radius: 14px; border: 1px solid #eaeef3; margin-bottom: 1.2rem; }
+        .edit-profile-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
         .edit-profile-form .form-group { margin-bottom: 0.6rem; }
-        .edit-profile-form .form-group label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #1a3b5c;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-        .edit-profile-form .form-group input {
-            width: 100%;
-            padding: 0.4rem 0.8rem;
-            border: 1.5px solid #dce5ef;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            background: #fafcff;
-        }
-        .edit-profile-form .form-group input:focus {
-            outline: none;
-            border-color: #2a7de1;
-        }
-        .edit-profile-form .form-group input:disabled {
-            background: #f0f4fa;
-            color: #7a94b0;
-        }
-        .edit-profile-form .form-actions {
-            display: flex;
-            gap: 0.6rem;
-            margin-top: 0.4rem;
-            flex-wrap: wrap;
-        }
-        .edit-profile-form .form-actions .btn {
-            padding: 0.35rem 1.2rem;
-            font-size: 0.85rem;
-        }
-        .order-history-item {
-            font-size: 0.85rem;
-            padding: 0.3rem 0;
-            border-bottom: 1px solid #eaeef3;
-            display: flex;
-            justify-content: space-between;
-        }
+        .edit-profile-form .form-group label { font-size: 0.8rem; font-weight: 500; color: #1a3b5c; display: block; margin-bottom: 0.2rem; }
+        .edit-profile-form .form-group input { width: 100%; padding: 0.4rem 0.8rem; border: 1.5px solid #dce5ef; border-radius: 10px; font-size: 0.9rem; background: #fafcff; }
+        .edit-profile-form .form-group input:focus { outline: none; border-color: #2a7de1; }
+        .edit-profile-form .form-group input:disabled { background: #f0f4fa; color: #7a94b0; }
+        .edit-profile-form .form-actions { display: flex; gap: 0.6rem; margin-top: 0.4rem; flex-wrap: wrap; }
+        .edit-profile-form .form-actions .btn { padding: 0.35rem 1.2rem; font-size: 0.85rem; }
+        .order-history-item { font-size: 0.85rem; padding: 0.3rem 0; border-bottom: 1px solid #eaeef3; display: flex; justify-content: space-between; }
         .order-history-item:last-child { border-bottom: none; }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.45);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; }
         .modal-overlay.active { display: flex; }
-        .modal-box {
-            background: white;
-            border-radius: 28px;
-            max-width: 440px;
-            width: 100%;
-            padding: 2rem;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.3s ease;
-            position: relative;
-        }
-        @keyframes slideUp {
-            0% { transform: translateY(30px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-        .modal-close {
-            position: absolute;
-            top: 0.8rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #8aa3bf;
-            cursor: pointer;
-        }
+        .modal-box { background: white; border-radius: 28px; max-width: 440px; width: 100%; padding: 2rem; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; position: relative; }
+        @keyframes slideUp { 0% { transform: translateY(30px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .modal-close { position: absolute; top: 0.8rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #8aa3bf; cursor: pointer; }
         .modal-close:hover { color: #1a3b5c; }
         .modal-title { font-size: 1.4rem; font-weight: 600; color: #0b1e2e; margin-bottom: 0.2rem; }
         .modal-subtitle { color: #5f7c9a; margin-bottom: 1.2rem; font-size: 0.9rem; }
         .form-group { margin-bottom: 1rem; }
-        .form-group label {
-            display: block;
-            font-weight: 500;
-            color: #1a3b5c;
-            margin-bottom: 0.2rem;
-            font-size: 0.85rem;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.6rem 0.9rem;
-            border: 1.5px solid #dce5ef;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            background: #fafcff;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #2a7de1;
-            box-shadow: 0 0 0 3px rgba(42,125,225,0.12);
-        }
-        .form-error {
-            color: #c53e3e;
-            font-size: 0.8rem;
-            display: none;
-        }
+        .form-group label { display: block; font-weight: 500; color: #1a3b5c; margin-bottom: 0.2rem; font-size: 0.85rem; }
+        .form-group input { width: 100%; padding: 0.6rem 0.9rem; border: 1.5px solid #dce5ef; border-radius: 12px; font-size: 0.95rem; background: #fafcff; }
+        .form-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42,125,225,0.12); }
+        .form-error { color: #c53e3e; font-size: 0.8rem; display: none; }
         .form-error.show { display: block; }
-        .modal-footer-text {
-            text-align: center;
-            margin-top: 1rem;
-            color: #5f7c9a;
-            font-size: 0.85rem;
-        }
-        .modal-footer-text a {
-            color: #1a4d7a;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .modal-footer-text { text-align: center; margin-top: 1rem; color: #5f7c9a; font-size: 0.85rem; }
+        .modal-footer-text a { color: #1a4d7a; font-weight: 600; cursor: pointer; }
         .modal-footer-text a:hover { text-decoration: underline; }
         .flex { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
         .mt-1 { margin-top: 0.8rem; }
@@ -794,18 +187,13 @@
             .navbar { flex-direction: column; align-items: stretch; }
             .navbar-right { justify-content: space-between; }
             .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-            .admin-product-form .form-row {
-                grid-template-columns: 1fr;
-                gap: 0.6rem;
-            }
+            .admin-product-form .form-row { grid-template-columns: 1fr; gap: 0.6rem; }
             .admin-product-form .form-row .btn { width: 100%; }
             .stats-dashboard { grid-template-columns: repeat(2, 1fr); }
             .profile-section { grid-template-columns: 1fr; }
             .edit-profile-form .form-row { grid-template-columns: 1fr; }
         }
-        @media (max-width: 480px) {
-            .product-grid { grid-template-columns: 1fr 1fr; }
-        }
+        @media (max-width: 480px) { .product-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -1025,7 +413,7 @@
 
 <script>
 // ============================================================
-//  🔥 Firebase 設定（您的 Firebase 專案設定 - 已修正）
+//  Firebase 設定
 // ============================================================
 const firebaseConfig = {
     apiKey: "AIzaSyBGVu4WdwS5JoviLuuatMxavKb0XoEKPdw",
@@ -1034,7 +422,7 @@ const firebaseConfig = {
     storageBucket: "shopping-cart-dfb10.firebasestorage.app",
     messagingSenderId: "218409074648",
     appId: "1:218409074648:web:97951246bcab1ba36f3cad"
-};  
+};
 
 // 初始化 Firebase
 firebase.initializeApp(firebaseConfig);
@@ -1193,10 +581,12 @@ async function saveCart(uid) {
     }
 }
 
+// ===== 重點：建立訂單時確保 userId 正確 =====
 async function createOrder(uid, userData, cartItems, address) {
     try {
+        // 確保 uid 正確傳入
         const order = {
-            userId: uid,
+            userId: uid,  // ← 這個必須是當前使用者的 UID
             userName: userData.name,
             userEmail: userData.email,
             items: cartItems.map(item => ({
@@ -1213,6 +603,7 @@ async function createOrder(uid, userData, cartItems, address) {
             updatedAt: new Date().toISOString()
         };
         const docRef = await db.collection('orders').add(order);
+        console.log('✅ 訂單已建立，userId:', uid, '訂單ID:', docRef.id);
         return { success: true, orderId: docRef.id, order: order };
     } catch (error) {
         console.error('建立訂單失敗:', error);
@@ -1220,33 +611,38 @@ async function createOrder(uid, userData, cartItems, address) {
     }
 }
 
+// ===== 重點：讀取訂單時只讀取自己的 =====
 async function loadOrders(uid) {
     try {
-        // 先確認當前使用者
-        const user = auth.currentUser;
-        if (!user) {
+        console.log('🔍 讀取訂單，使用者 UID:', uid);
+        console.log('🔍 當前會員角色:', currentUserData?.role);
+        
+        // 先確認是否有 currentUser
+        if (!uid) {
+            console.warn('⚠️ 沒有 UID，無法讀取訂單');
             orders = [];
             renderOrders();
             return;
         }
 
-        // 取得當前會員資料
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        const userData = userDoc.exists ? userDoc.data() : null;
-        const isAdmin = userData && userData.role === 'admin';
-
         let query = db.collection('orders').orderBy('createdAt', 'desc');
         
         // 非管理員只查自己的訂單
-        if (!isAdmin) {
-            query = query.where('userId', '==', user.uid);
+        if (currentUserData?.role !== 'admin') {
+            query = query.where('userId', '==', uid);
+            console.log('🔍 一般會員：只查自己的訂單 (userId =', uid, ')');
+        } else {
+            console.log('🔍 管理員：查詢所有訂單');
         }
         
         const snapshot = await query.get();
         orders = [];
         snapshot.forEach(doc => {
-            orders.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            orders.push({ id: doc.id, ...data });
+            console.log('📦 訂單:', doc.id, 'userId:', data.userId);
         });
+        console.log('✅ 共讀取', orders.length, '筆訂單');
         renderOrders();
     } catch (error) {
         console.error('讀取訂單失敗:', error);
@@ -1254,7 +650,7 @@ async function loadOrders(uid) {
         renderOrders();
     }
 }
-    
+
 async function updateOrderStatus(orderId, status) {
     try {
         await db.collection('orders').doc(orderId).update({
@@ -1472,6 +868,7 @@ document.getElementById('clearCartBtn').addEventListener('click', async function
     }
 });
 
+// ===== 重點：結帳時確認 uid 正確 =====
 document.getElementById('checkoutBtn').addEventListener('click', async function() {
     if (!currentUser) {
         alert('⚠️ 請先登入才能結帳！');
@@ -1488,6 +885,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
     const address = prompt('請輸入收件地址：', currentUserData?.addresses?.[0] || '');
     if (address === null) return;
 
+    // 確保使用 currentUser.uid
     const result = await createOrder(currentUser.uid, currentUserData, activeItems, address);
     if (result.success) {
         cart.forEach(item => { item.quantity = 0; });
@@ -1495,6 +893,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
         document.getElementById('cartBadge').textContent = 0;
         if (currentUser) await saveCart(currentUser.uid);
         alert(`✅ 訂單已建立！\n訂單編號：${result.orderId}\n總金額：$ ${result.order.total}\n將於 1-3 個工作天出貨。`);
+        // 重新載入訂單
         await loadOrders(currentUser.uid);
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelector('[data-tab="tabOrders"]').classList.add('active');
@@ -1505,6 +904,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
     }
 });
 
+// ===== 重點：渲染訂單時再次過濾 =====
 function renderOrders() {
     const container = document.getElementById('orderList');
     
@@ -1513,7 +913,14 @@ function renderOrders() {
         return;
     }
 
-    if (orders.length === 0) {
+    // 再次過濾：非管理員只顯示自己的訂單
+    let displayOrders = orders;
+    if (currentUserData?.role !== 'admin') {
+        displayOrders = orders.filter(o => o.userId === currentUser.uid);
+        console.log('🔍 過濾後訂單數量:', displayOrders.length);
+    }
+
+    if (displayOrders.length === 0) {
         container.innerHTML = `<div class="empty-cart"><i class="fas fa-box"></i><p>${currentUserData?.role === 'admin' ? '目前沒有任何訂單' : '您目前尚無訂單'}</p></div>`;
         return;
     }
@@ -1534,12 +941,7 @@ function renderOrders() {
     };
 
     let html = '';
-    orders.forEach(order => {
-        // 再次確認：非管理員只能看自己的訂單
-        if (currentUserData?.role !== 'admin' && order.userId !== currentUser.uid) {
-            return;
-        }
-        
+    displayOrders.forEach(order => {
         const itemsStr = order.items.map(i => `${i.name} x${i.quantity}`).join('、');
         const statusText = statusMap[order.status] || order.status;
         const isAdmin = currentUserData?.role === 'admin';
@@ -1586,7 +988,7 @@ function renderOrders() {
         });
     });
 }
-    
+
 async function renderMemberManagement() {
     const isAdmin = currentUserData?.role === 'admin';
     if (!currentUser || !isAdmin) {
@@ -1944,10 +1346,13 @@ document.getElementById('addAddressBtn').addEventListener('click', async functio
 // ============================================================
 
 auth.onAuthStateChanged(async function(user) {
+    console.log('🔐 認證狀態變更:', user ? '已登入 - ' + user.uid : '未登入');
     if (user) {
         currentUser = user;
         currentUserData = await loadUserData(user.uid);
+        console.log('👤 會員資料:', currentUserData);
         await loadCart(user.uid);
+        // 讀取訂單時傳入 user.uid
         await loadOrders(user.uid);
         await updateUserUI();
         await renderStats();
@@ -2043,7 +1448,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         const target = document.getElementById(this.dataset.tab);
         if (target) target.classList.add('active');
-        if (this.dataset.tab === 'tabOrders') await loadOrders(currentUser?.uid);
+        if (this.dataset.tab === 'tabOrders' && currentUser) {
+            await loadOrders(currentUser.uid);
+        }
         if (this.dataset.tab === 'tabMembers') await renderMemberManagement();
         if (this.dataset.tab === 'tabStats') await renderStats();
         if (this.dataset.tab === 'tabProfile') await renderProfile();
@@ -2207,15 +1614,18 @@ document.getElementById('registerBtn').addEventListener('click', function() { op
 //  初始化
 // ============================================================
 async function init() {
+    console.log('🚀 購物系統初始化...');
     await initProducts();
     renderCart();
     document.getElementById('cartBadge').textContent = calcTotalItems();
+    console.log('✅ 初始化完成');
 }
 
 init();
 
 console.log('🔑 管理員帳號請在 Firebase Authentication 手動建立');
 console.log('📌 或註冊後在 Firestore 的 users 集合將 role 改為 admin');
+console.log('📌 一般會員登入後，訂單頁面應該只顯示自己的訂單');
 </script>
 </body>
 </html>
