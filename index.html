@@ -1333,6 +1333,49 @@ document.getElementById('addAddressBtn').addEventListener('click', async functio
 });
 
 // ============================================================
+//  綁定「新增商品」按鈕事件（永久有效）
+// ============================================================
+function bindAddProductButton() {
+    const addBtn = document.getElementById('addProductBtn');
+    if (!addBtn) return;
+    
+    // 移除舊的事件監聽器（避免重複綁定）
+    addBtn.removeEventListener('click', handleAddProduct);
+    addBtn.addEventListener('click', handleAddProduct);
+    console.log('✅ 新增商品按鈕已綁定');
+}
+
+async function handleAddProduct() {
+    const name = document.getElementById('newProductName').value.trim();
+    const price = document.getElementById('newProductPrice').value.trim();
+    const desc = document.getElementById('newProductDesc').value.trim();
+    const image = document.getElementById('newProductImage').value.trim();
+
+    if (!name) {
+        alert('請輸入商品名稱！');
+        document.getElementById('newProductName').focus();
+        return;
+    }
+    if (!price || isNaN(price) || parseInt(price) <= 0) {
+        alert('請輸入有效的價格！');
+        document.getElementById('newProductPrice').focus();
+        return;
+    }
+
+    const result = await addProduct(name, parseInt(price), desc, image);
+    if (result.success) {
+        document.getElementById('newProductName').value = '';
+        document.getElementById('newProductPrice').value = '';
+        document.getElementById('newProductDesc').value = '';
+        document.getElementById('newProductImage').value = '';
+        alert('✅ 商品已新增！');
+        renderProducts();
+    } else {
+        alert('❌ ' + result.message);
+    }
+}
+
+// ============================================================
 //  認證管理
 // ============================================================
 
@@ -1352,10 +1395,13 @@ auth.onAuthStateChanged(async function(user) {
         }
         
         await updateUserUI();
-        await renderProducts();     // ← 🔥 新增！確保管理員刪除按鈕自動顯示
+        await renderProducts();     // 確保管理員刪除按鈕顯示
         await renderStats();
         await renderMemberManagement();
         await renderProfile();
+        
+        // 每次登入時重新綁定新增按鈕
+        bindAddProductButton();
     } else {
         currentUser = null;
         currentUserData = null;
@@ -1621,6 +1667,8 @@ async function init() {
     await loadProducts();
     renderCart();
     document.getElementById('cartBadge').textContent = calcTotalItems();
+    // 綁定新增商品按鈕
+    bindAddProductButton();
     console.log('✅ 初始化完成');
 }
 
