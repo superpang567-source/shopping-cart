@@ -61,7 +61,7 @@
         .product-card .desc { font-size: 0.82rem; color: #6a8aaa; margin-bottom: 0.4rem; line-height: 1.4; height: 2.6rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .product-card .price { color: #1a4d7a; font-weight: 700; font-size: 1.2rem; margin: 0.2rem 0 0.6rem; }
         .product-card .btn { width: 100%; justify-content: center; }
-        .product-card .delete-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #f8d7da; border: none; color: #721c24; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.15s; z-index: 2; }
+        .product-card .delete-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #f8d7da; border: none; color: #721c24; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.15s; z-index: 2; display: flex; align-items: center; justify-content: center; }
         .product-card .delete-btn:hover { background: #c53e3e; color: white; }
         .cart-items { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; min-height: 80px; }
         .item-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: #f9fbfd; border-radius: 16px; padding: 0.5rem 1rem; border: 1px solid #eaeef3; gap: 0.5rem; }
@@ -1352,6 +1352,7 @@ auth.onAuthStateChanged(async function(user) {
         }
         
         await updateUserUI();
+        await renderProducts();     // ← 🔥 新增！確保管理員刪除按鈕自動顯示
         await renderStats();
         await renderMemberManagement();
         await renderProfile();
