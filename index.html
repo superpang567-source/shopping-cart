@@ -1344,13 +1344,9 @@ auth.onAuthStateChanged(async function(user) {
         currentUserData = await loadUserData(user.uid);
         console.log('👤 會員資料:', currentUserData);
         
-        // 載入購物車
         await loadCart(user.uid);
-        
-        // 載入訂單
         await loadOrders(user.uid);
         
-        // 確保商品已載入
         if (products.length === 0) {
             await loadProducts();
         }
@@ -1365,7 +1361,6 @@ auth.onAuthStateChanged(async function(user) {
         cart = [];
         orders = [];
         
-        // 仍要顯示商品
         if (products.length === 0) {
             await loadProducts();
         }
@@ -1621,19 +1616,13 @@ document.getElementById('registerBtn').addEventListener('click', function() { op
 //  初始化 - 先載入商品再處理認證
 // ============================================================
 async function init() {
-    console.log('🚀 購物系統初始化...');
-    
-    // 先載入商品（無論是否登入都要顯示）
+    console.log('🚀 極簡邦購初始化...');
     await loadProducts();
-    
-    // 渲染購物車
     renderCart();
     document.getElementById('cartBadge').textContent = calcTotalItems();
-    
     console.log('✅ 初始化完成');
 }
 
-// 啟動
 init();
 
 console.log('🔑 管理員帳號請在 Firebase Authentication 手動建立');
