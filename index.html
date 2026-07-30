@@ -682,15 +682,27 @@ async function loadAllUsers() {
 
 async function deleteUser(uid) {
     try {
+        // 1. 刪除會員資料
         await db.collection('users').doc(uid).delete();
+        
+        // 2. 刪除購物車
         await db.collection('carts').doc(uid).delete();
+        
+        // 3. 刪除該會員的所有訂單
+        const ordersSnapshot = await db.collection('orders').where('userId', '==', uid).get();
+        const batch = db.batch();
+        ordersSnapshot.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        await batch.commit();
+        
+        console.log('✅ 會員、購物車、訂單已全部刪除');
         return { success: true };
     } catch (error) {
         console.error('刪除會員失敗:', error);
         return { success: false, message: error.message };
     }
 }
-
 // ============================================================
 //  輔助函數
 // ============================================================
