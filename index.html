@@ -20,6 +20,25 @@
         .navbar-brand i { color: #2a7de1; }
         .cloud-badge { font-size: 0.7rem; color: #1e7a5e; background: #e8f5ee; padding: 0.1rem 0.6rem; border-radius: 20px; }
         .navbar-right { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        
+        /* Line 好友按鈕 */
+        .line-btn {
+            background: #06C755;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .line-btn:hover { background: #05a84a; transform: scale(0.97); }
+        .line-btn i { font-size: 0.9rem; }
+        
         .user-status { display: flex; align-items: center; gap: 0.6rem; background: #f2f7fd; padding: 0.2rem 1rem 0.2rem 0.6rem; border-radius: 40px; border: 1px solid #dde6f0; }
         .user-avatar { width: 34px; height: 34px; background: #2a7de1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem; }
         .user-name { font-weight: 500; color: #1a3b5c; font-size: 0.9rem; }
@@ -206,6 +225,11 @@
             <span class="cloud-badge">☁️ 雲端版</span>
         </div>
         <div class="navbar-right">
+            <!-- Line 好友按鈕 -->
+            <button class="line-btn" onclick="copyLineID()">
+                <i class="fab fa-line"></i> Line 好友
+            </button>
+            
             <div class="user-status">
                 <div class="user-avatar" id="userAvatar">遊</div>
                 <span class="user-name" id="userNameDisplay"><span class="guest-text">訪客</span></span>
@@ -413,6 +437,26 @@
 
 <script>
 // ============================================================
+//  Line ID 複製功能
+// ============================================================
+const LINE_ID = '@pangshopping';
+
+function copyLineID() {
+    navigator.clipboard.writeText(LINE_ID).then(() => {
+        alert('✅ Line ID 已複製：' + LINE_ID);
+    }).catch(() => {
+        // 如果剪貼簿 API 失敗，使用備用方法
+        const input = document.createElement('input');
+        input.value = LINE_ID;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('✅ Line ID 已複製：' + LINE_ID);
+    });
+}
+
+// ============================================================
 //  Firebase 設定
 // ============================================================
 const firebaseConfig = {
@@ -583,16 +627,13 @@ async function saveCart(uid) {
     }
 }
 
-// ===== 訂單編號：用戶名-數字 =====
 async function createOrder(uid, userData, cartItems, address) {
     try {
-        // 計算該用戶已有多少訂單，產生序號
         const existingOrders = await db.collection('orders')
             .where('userId', '==', uid)
             .get();
         const orderCount = existingOrders.size + 1;
         
-        // 訂單編號：用戶名-數字（例如：小明-1）
         const orderId = userData.name + '-' + orderCount;
         
         const order = {
@@ -614,7 +655,6 @@ async function createOrder(uid, userData, cartItems, address) {
             updatedAt: new Date().toISOString()
         };
         
-        // 使用自訂訂單編號作為文檔 ID
         await db.collection('orders').doc(orderId).set(order);
         console.log('✅ 訂單已建立，訂單編號:', orderId);
         return { success: true, orderId: orderId, order: order };
@@ -693,10 +733,8 @@ async function loadAllUsers() {
     }
 }
 
-// ===== 刪除會員時一併刪除所有訂單（不保留） =====
 async function deleteUser(uid) {
     try {
-        // 1. 刪除該會員的所有訂單
         const ordersSnapshot = await db.collection('orders').where('userId', '==', uid).get();
         const batch = db.batch();
         ordersSnapshot.forEach(doc => {
@@ -705,11 +743,9 @@ async function deleteUser(uid) {
         await batch.commit();
         console.log('✅ 已刪除該會員的所有訂單');
         
-        // 2. 刪除購物車
         await db.collection('carts').doc(uid).delete();
         console.log('✅ 已刪除該會員的購物車');
         
-        // 3. 刪除會員資料
         await db.collection('users').doc(uid).delete();
         console.log('✅ 已刪除該會員的資料');
         
@@ -993,7 +1029,6 @@ function renderOrders() {
     });
     container.innerHTML = html;
 
-    // 更新訂單狀態事件
     document.querySelectorAll('.status-update').forEach(btn => {
         btn.addEventListener('click', async function() {
             const orderId = this.dataset.id;
@@ -1010,7 +1045,6 @@ function renderOrders() {
         });
     });
 
-    // ===== 新增：直接刪除訂單事件（取代取消訂單） =====
     document.querySelectorAll('.delete-order-btn').forEach(btn => {
         btn.addEventListener('click', async function() {
             const orderId = this.dataset.id;
