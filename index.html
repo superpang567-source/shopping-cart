@@ -983,7 +983,7 @@ function renderOrders() {
                         ${order.status === 'pending' ? `<button class="btn btn-warning btn-xs status-update" data-id="${order.id}" data-status="processing">改為處理中</button>` : ''}
                         ${order.status === 'processing' ? `<button class="btn btn-primary btn-xs status-update" data-id="${order.id}" data-status="shipped">改為已出貨</button>` : ''}
                         ${order.status === 'shipped' ? `<button class="btn btn-success btn-xs status-update" data-id="${order.id}" data-status="delivered">改為已送達</button>` : ''}
-                        ${['pending', 'processing'].includes(order.status) ? `<button class="btn btn-danger btn-xs status-update" data-id="${order.id}" data-status="cancelled">取消訂單</button>` : ''}
+                        ${['pending', 'processing'].includes(order.status) ? `<button class="btn btn-danger btn-xs delete-order-btn" data-id="${order.id}">🗑️ 刪除訂單</button>` : ''}
                     ` : `
                         <span style="font-size:0.8rem;color:#5f7c9a;">🔒 訂單狀態由管理員更新</span>
                     `}
@@ -993,6 +993,7 @@ function renderOrders() {
     });
     container.innerHTML = html;
 
+    // 更新訂單狀態事件
     document.querySelectorAll('.status-update').forEach(btn => {
         btn.addEventListener('click', async function() {
             const orderId = this.dataset.id;
@@ -1005,6 +1006,25 @@ function renderOrders() {
                 await renderMemberManagement();
             } else {
                 alert('⚠️ ' + result.message);
+            }
+        });
+    });
+
+    // ===== 新增：直接刪除訂單事件（取代取消訂單） =====
+    document.querySelectorAll('.delete-order-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const orderId = this.dataset.id;
+            if (!confirm(`確定要刪除此訂單（${orderId}）嗎？\n此操作無法復原！`)) return;
+            
+            try {
+                await db.collection('orders').doc(orderId).delete();
+                alert(`✅ 訂單 ${orderId} 已刪除`);
+                await loadOrders(currentUser.uid);
+                await renderStats();
+                await renderMemberManagement();
+            } catch (error) {
+                console.error('刪除訂單失敗:', error);
+                alert('⚠️ 刪除訂單失敗：' + error.message);
             }
         });
     });
