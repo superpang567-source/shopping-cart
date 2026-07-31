@@ -583,7 +583,7 @@ async function saveCart(uid) {
     }
 }
 
-// ===== 重點：訂單編號改為「用戶名-數字」 =====
+// ===== 訂單編號：用戶名-數字 =====
 async function createOrder(uid, userData, cartItems, address) {
     try {
         // 計算該用戶已有多少訂單，產生序號
@@ -693,23 +693,27 @@ async function loadAllUsers() {
     }
 }
 
+// ===== 刪除會員時一併刪除所有訂單（不保留） =====
 async function deleteUser(uid) {
     try {
-        // 1. 刪除會員資料
-        await db.collection('users').doc(uid).delete();
-        
-        // 2. 刪除購物車
-        await db.collection('carts').doc(uid).delete();
-        
-        // 3. 刪除該會員的所有訂單
+        // 1. 刪除該會員的所有訂單
         const ordersSnapshot = await db.collection('orders').where('userId', '==', uid).get();
         const batch = db.batch();
         ordersSnapshot.forEach(doc => {
             batch.delete(doc.ref);
         });
         await batch.commit();
+        console.log('✅ 已刪除該會員的所有訂單');
         
-        console.log('✅ 會員、購物車、訂單已全部刪除');
+        // 2. 刪除購物車
+        await db.collection('carts').doc(uid).delete();
+        console.log('✅ 已刪除該會員的購物車');
+        
+        // 3. 刪除會員資料
+        await db.collection('users').doc(uid).delete();
+        console.log('✅ 已刪除該會員的資料');
+        
+        console.log('✅ 會員、購物車、訂單已全部刪除（訂單不保留）');
         return { success: true };
     } catch (error) {
         console.error('刪除會員失敗:', error);
@@ -1097,12 +1101,13 @@ async function renderMemberManagement() {
             const member = nonAdminUsers.find(u => u.id === userId);
             if (!member) return;
             
-            if (!confirm(`確定要刪除會員「${member.name}」嗎？\n刪除後訂單紀錄仍會保留。`)) return;
+            if (!confirm(`確定要刪除會員「${member.name}」嗎？\n刪除後該會員的所有訂單也將一併刪除！`)) return;
             
             const result = await deleteUser(userId);
             if (result.success) {
-                alert(`✅ 會員「${member.name}」已刪除`);
+                alert(`✅ 會員「${member.name}」及其所有訂單已刪除`);
                 await renderMemberManagement();
+                await renderStats();
             } else {
                 alert('⚠️ ' + result.message);
             }
@@ -1365,7 +1370,6 @@ function bindAddProductButton() {
     const addBtn = document.getElementById('addProductBtn');
     if (!addBtn) return;
     
-    // 移除舊的事件監聽器（避免重複綁定）
     addBtn.removeEventListener('click', handleAddProduct);
     addBtn.addEventListener('click', handleAddProduct);
     console.log('✅ 新增商品按鈕已綁定');
@@ -1421,12 +1425,11 @@ auth.onAuthStateChanged(async function(user) {
         }
         
         await updateUserUI();
-        await renderProducts();     // 確保管理員刪除按鈕顯示
+        await renderProducts();
         await renderStats();
         await renderMemberManagement();
         await renderProfile();
         
-        // 每次登入時重新綁定新增按鈕
         bindAddProductButton();
     } else {
         currentUser = null;
@@ -1686,7 +1689,7 @@ document.getElementById('loginBtn').addEventListener('click', function() { openM
 document.getElementById('registerBtn').addEventListener('click', function() { openModal('register'); });
 
 // ============================================================
-//  初始化 - 先載入商品再處理認證
+//  初始化
 // ============================================================
 async function init() {
     console.log('🚀 極簡邦購初始化...');
