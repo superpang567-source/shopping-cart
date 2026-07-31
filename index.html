@@ -583,9 +583,20 @@ async function saveCart(uid) {
     }
 }
 
+// ===== 重點：訂單編號改為「用戶名-數字」 =====
 async function createOrder(uid, userData, cartItems, address) {
     try {
+        // 計算該用戶已有多少訂單，產生序號
+        const existingOrders = await db.collection('orders')
+            .where('userId', '==', uid)
+            .get();
+        const orderCount = existingOrders.size + 1;
+        
+        // 訂單編號：用戶名-數字（例如：小明-1）
+        const orderId = userData.name + '-' + orderCount;
+        
         const order = {
+            id: orderId,
             userId: uid,
             userName: userData.name,
             userEmail: userData.email,
@@ -602,9 +613,11 @@ async function createOrder(uid, userData, cartItems, address) {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
-        const docRef = await db.collection('orders').add(order);
-        console.log('✅ 訂單已建立，userId:', uid, '訂單ID:', docRef.id);
-        return { success: true, orderId: docRef.id, order: order };
+        
+        // 使用自訂訂單編號作為文檔 ID
+        await db.collection('orders').doc(orderId).set(order);
+        console.log('✅ 訂單已建立，訂單編號:', orderId);
+        return { success: true, orderId: orderId, order: order };
     } catch (error) {
         console.error('建立訂單失敗:', error);
         return { success: false, message: error.message };
@@ -703,6 +716,7 @@ async function deleteUser(uid) {
         return { success: false, message: error.message };
     }
 }
+
 // ============================================================
 //  輔助函數
 // ============================================================
@@ -952,7 +966,7 @@ function renderOrders() {
         html += `
             <div class="order-card">
                 <div class="order-header">
-                    <span class="order-id">${order.id}</span>
+                    <span class="order-id" style="font-weight:700;color:#1a4d7a;">${order.id}</span>
                     <span class="order-date">${new Date(order.createdAt).toLocaleString('zh-TW')}</span>
                     <span class="order-status ${statusClass[order.status] || 'status-pending'}">${statusText}</span>
                 </div>
@@ -1679,7 +1693,6 @@ async function init() {
     await loadProducts();
     renderCart();
     document.getElementById('cartBadge').textContent = calcTotalItems();
-    // 綁定新增商品按鈕
     bindAddProductButton();
     console.log('✅ 初始化完成');
 }
