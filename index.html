@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-
-     <!-- PWA 設定 -->
+    
+    <!-- PWA 設定 -->
     <link rel="manifest" href="manifest.json" />
     <link rel="apple-touch-icon" href="icon-192.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-title" content="極簡邦購" />
     <meta name="theme-color" content="#1a4d7a" />
     
-    <title>極簡邦購 · Firebase 雲端版</title>
+    <title>極簡邦購 · 雲端版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     
     <!-- Firebase SDK -->
@@ -52,7 +52,7 @@
         .user-avatar { width: 34px; height: 34px; background: #2a7de1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem; }
         .user-name { font-weight: 500; color: #1a3b5c; font-size: 0.9rem; }
         .user-name .guest-text { color: #7a94b0; font-weight: 400; }
-        .user-email { font-size: 0.75rem; color: #5f7c9a; background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; }
+        .user-phone-display { font-size: 0.75rem; color: #5f7c9a; background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; }
         .user-role-badge { font-size: 0.7rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 20px; background: #d4a12a; color: white; }
         .user-role-badge.admin { background: #c53e3e; }
         .btn { padding: 0.5rem 1.2rem; border: none; border-radius: 60px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; }
@@ -242,7 +242,7 @@
             <div class="user-status">
                 <div class="user-avatar" id="userAvatar">遊</div>
                 <span class="user-name" id="userNameDisplay"><span class="guest-text">訪客</span></span>
-                <span class="user-email" id="userEmailDisplay"></span>
+                <span class="user-phone-display" id="userPhoneDisplay"></span>
                 <span class="user-role-badge" id="userRoleBadge" style="display:none;"></span>
                 <button class="btn-logout" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> 登出</button>
             </div>
@@ -321,6 +321,7 @@
                     <thead>
                         <tr>
                             <th>姓名</th>
+                            <th>手機</th>
                             <th>Email</th>
                             <th>角色</th>
                             <th>訂單數</th>
@@ -390,25 +391,25 @@
         <div id="editProfileContainer" style="display:none;">
             <div class="edit-profile-form">
                 <h4 style="margin-bottom:0.6rem;color:#0b1e2e;"><i class="fas fa-user-edit" style="color:#2a7de1;"></i> 編輯個人資料</h4>
-                <div class="form-row">
+                <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
                     <div class="form-group">
                         <label>姓名</label>
                         <input type="text" id="editName" placeholder="請輸入姓名" />
                     </div>
                     <div class="form-group">
+                        <label>手機號碼</label>
+                        <input type="tel" id="editPhone" placeholder="請輸入手機號碼" />
+                    </div>
+                </div>
+                <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+                    <div class="form-group">
                         <label>Email（帳號）</label>
                         <input type="email" id="editEmail" disabled />
                         <span style="font-size:0.7rem;color:#8aa3bf;">⚠️ Email 為登入帳號，不可修改</span>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group">
                         <label>新密碼（留空則不修改）</label>
                         <input type="password" id="editPassword" placeholder="輸入新密碼（至少6字元）" />
-                    </div>
-                    <div class="form-group">
-                        <label>確認新密碼</label>
-                        <input type="password" id="editPasswordConfirm" placeholder="再次輸入新密碼" />
                     </div>
                 </div>
                 <div class="form-actions">
@@ -583,6 +584,7 @@ async function loadUserData(uid) {
             const newData = {
                 name: user.displayName || user.email.split('@')[0],
                 email: user.email,
+                phone: '',
                 role: 'member',
                 addresses: ['請新增您的收件地址或社區名稱'],
                 createdAt: new Date().toISOString()
@@ -648,6 +650,7 @@ async function createOrder(uid, userData, cartItems, address) {
             id: orderId,
             userId: uid,
             userName: userData.name,
+            userPhone: userData.phone || '',
             userEmail: userData.email,
             items: cartItems.map(item => ({
                 id: item.id,
@@ -1018,7 +1021,7 @@ function renderOrders() {
                     <span class="order-date">${new Date(order.createdAt).toLocaleString('zh-TW')}</span>
                     <span class="order-status ${statusClass[order.status] || 'status-pending'}">${statusText}</span>
                 </div>
-                ${isAdmin ? `<div class="order-user-info">👤 ${order.userName} (📧${order.userEmail})</div>` : ''}
+                ${isAdmin ? `<div class="order-user-info">👤 ${order.userName} (📱${order.userPhone || '未填'} | 📧${order.userEmail})</div>` : ''}
                 <div class="order-items">📦 ${itemsStr}</div>
                 <div class="order-address">📍 ${order.address}</div>
                 <div class="order-total">總計：$ ${order.total}</div>
@@ -1118,6 +1121,7 @@ async function renderMemberManagement() {
             html += `
                 <tr>
                     <td><strong>${u.name}</strong></td>
+                    <td>${u.phone || '未填'}</td>
                     <td>${u.email}</td>
                     <td><span class="member-role member">會員</span></td>
                     <td><span class="order-count">${stats.count} 筆</span></td>
@@ -1266,6 +1270,7 @@ async function renderProfile() {
 
     document.getElementById('editProfileContainer').style.display = 'block';
     document.getElementById('editName').value = currentUserData.name || '';
+    document.getElementById('editPhone').value = currentUserData.phone || '';
     document.getElementById('editEmail').value = currentUserData.email || '';
     document.getElementById('editPassword').value = '';
     document.getElementById('editPasswordConfirm').value = '';
@@ -1345,6 +1350,7 @@ document.getElementById('saveProfileBtn').addEventListener('click', async functi
     }
 
     const name = document.getElementById('editName').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
     const password = document.getElementById('editPassword').value.trim();
     const passwordConfirm = document.getElementById('editPasswordConfirm').value.trim();
 
@@ -1369,7 +1375,10 @@ document.getElementById('saveProfileBtn').addEventListener('click', async functi
         return;
     }
 
-    const result = await updateUserData(currentUser.uid, { name: name });
+    const updateData = { name: name }
+    if (phone) updateData.phone = phone
+
+    const result = await updateUserData(currentUser.uid, updateData);
     if (result.success) {
         if (password) {
             try {
@@ -1400,6 +1409,7 @@ document.getElementById('saveProfileBtn').addEventListener('click', async functi
 document.getElementById('cancelEditBtn').addEventListener('click', function() {
     if (currentUserData) {
         document.getElementById('editName').value = currentUserData.name || '';
+        document.getElementById('editPhone').value = currentUserData.phone || '';
         document.getElementById('editEmail').value = currentUserData.email || '';
         document.getElementById('editPassword').value = '';
         document.getElementById('editPasswordConfirm').value = '';
@@ -1517,8 +1527,10 @@ async function updateUserUI() {
         const initial = currentUserData.name ? currentUserData.name.charAt(0).toUpperCase() : 'U';
         document.getElementById('userAvatar').textContent = initial;
         document.getElementById('userNameDisplay').innerHTML = `<strong>${currentUserData.name}</strong>`;
-        document.getElementById('userEmailDisplay').textContent = `📧 ${currentUserData.email}`;
-        document.getElementById('userEmailDisplay').style.display = 'inline';
+        
+        const phoneDisplay = currentUserData.phone ? `📱 ${currentUserData.phone}` : '';
+        document.getElementById('userPhoneDisplay').textContent = phoneDisplay;
+        document.getElementById('userPhoneDisplay').style.display = phoneDisplay ? 'inline' : 'none';
         
         if (currentUserData.role === 'admin') {
             document.getElementById('userRoleBadge').textContent = '👑 管理員';
@@ -1536,8 +1548,8 @@ async function updateUserUI() {
     } else {
         document.getElementById('userAvatar').textContent = '遊';
         document.getElementById('userNameDisplay').innerHTML = `<span class="guest-text">訪客</span>`;
-        document.getElementById('userEmailDisplay').textContent = '';
-        document.getElementById('userEmailDisplay').style.display = 'none';
+        document.getElementById('userPhoneDisplay').textContent = '';
+        document.getElementById('userPhoneDisplay').style.display = 'none';
         document.getElementById('userRoleBadge').style.display = 'none';
         document.getElementById('logoutBtn').style.display = 'none';
         document.getElementById('loginBtn').style.display = 'inline-flex';
@@ -1660,6 +1672,10 @@ function renderModalContent(mode) {
                     <input type="text" id="regName" placeholder="請輸入您的姓名" required />
                 </div>
                 <div class="form-group">
+                    <label>手機號碼</label>
+                    <input type="tel" id="regPhone" placeholder="請輸入手機號碼" />
+                </div>
+                <div class="form-group">
                     <label>Email</label>
                     <input type="email" id="regEmail" placeholder="請輸入您的 Email（作為登入帳號）" required />
                 </div>
@@ -1708,6 +1724,7 @@ async function handleLogin(e) {
 async function handleRegister(e) {
     e.preventDefault();
     const name = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value.trim();
     const errorEl = document.getElementById('registerError');
@@ -1728,6 +1745,7 @@ async function handleRegister(e) {
         await db.collection('users').doc(userCredential.user.uid).set({
             name: name,
             email: email,
+            phone: phone || '',
             role: 'member',
             addresses: ['請新增您的收件地址或社區名稱'],
             createdAt: new Date().toISOString()
