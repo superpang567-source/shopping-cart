@@ -30,7 +30,6 @@
         .cloud-badge { font-size: 0.7rem; color: #1e7a5e; background: #e8f5ee; padding: 0.1rem 0.6rem; border-radius: 20px; }
         .navbar-right { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
         
-        /* Line 好友按鈕 */
         .line-btn {
             background: #06C755;
             color: white;
@@ -72,6 +71,26 @@
         .btn-logout:hover { background: #ffe8e8; }
         .btn-danger-outline { background: transparent; border: 1px solid #f0ced0; color: #a54a4a; }
         .btn-danger-outline:hover { background: #ffe8e8; }
+        
+        /* 商品移動按鈕 */
+        .move-btn {
+            background: #e8effa;
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #1a3b5c;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 1px;
+        }
+        .move-btn:hover { background: #c8d9ed; }
+        .move-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        
         .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.8rem; flex-wrap: wrap; border-bottom: 2px solid #eef2f7; padding-bottom: 0.5rem; }
         .tab-btn { padding: 0.5rem 1.5rem; border: none; background: transparent; font-weight: 600; color: #5f7c9a; cursor: pointer; border-radius: 40px; transition: 0.15s; font-size: 0.95rem; }
         .tab-btn:hover { background: #eef4fa; }
@@ -80,6 +99,7 @@
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+        
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
         .product-card { background: #ffffff; border-radius: 20px; padding: 1rem 1rem 1.2rem; text-align: center; border: 1px solid #eaeef3; transition: 0.2s; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: #c5d5e8; }
@@ -91,6 +111,10 @@
         .product-card .btn { width: 100%; justify-content: center; }
         .product-card .delete-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #f8d7da; border: none; color: #721c24; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.15s; z-index: 2; display: flex; align-items: center; justify-content: center; }
         .product-card .delete-btn:hover { background: #c53e3e; color: white; }
+        
+        /* 管理員專用移動按鈕區 */
+        .admin-controls { display: flex; justify-content: center; gap: 0.3rem; margin-top: 0.4rem; }
+        
         .cart-items { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; min-height: 80px; }
         .item-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: #f9fbfd; border-radius: 16px; padding: 0.5rem 1rem; border: 1px solid #eaeef3; gap: 0.5rem; }
         .item-info { display: flex; align-items: center; gap: 0.8rem; flex: 2 1 150px; }
@@ -106,12 +130,14 @@
         .item-subtotal { font-weight: 600; min-width: 60px; text-align: right; font-size: 0.95rem; }
         .remove-btn { background: transparent; border: none; color: #9aafc7; cursor: pointer; padding: 0 4px; }
         .remove-btn:hover { color: #c53e3e; }
+        
         .empty-cart { text-align: center; padding: 2rem; color: #5f7c9a; }
         .empty-cart i { font-size: 2.5rem; color: #b8ccdf; }
         .cart-summary { background: #f2f7fd; border-radius: 20px; padding: 1rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; border: 1px solid #dfe8f2; gap: 0.8rem; }
         .total-price { font-size: 1.6rem; font-weight: 700; color: #0a253b; }
         .total-price small { font-size: 1rem; font-weight: 400; color: #4a6d8f; }
         .badge { background: #eaf0f8; padding: 0.1rem 0.8rem; border-radius: 30px; font-size: 0.8rem; color: #1a3b5c; }
+        
         .order-list { display: flex; flex-direction: column; gap: 1rem; }
         .order-card { background: #f9fbfd; border-radius: 16px; padding: 1rem 1.2rem; border: 1px solid #eaeef3; }
         .order-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
@@ -128,6 +154,7 @@
         .order-address { font-size: 0.85rem; color: #5f7c9a; margin-top: 0.3rem; }
         .order-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
         .order-user-info { font-size: 0.8rem; color: #5f7c9a; background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; display: inline-block; }
+        
         .member-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; padding: 0.8rem 1.2rem; background: #f9fbfd; border-radius: 12px; border: 1px solid #eaeef3; }
         .member-stats span { font-size: 0.9rem; color: #1a3b5c; }
         .member-stats strong { color: #0b1e2e; }
@@ -140,6 +167,7 @@
         .member-table .member-role.admin { background: #c53e3e; color: white; }
         .member-table .member-role.member { background: #d4a12a; color: white; }
         .member-table .order-count { background: #eaf0f8; padding: 0.1rem 0.6rem; border-radius: 20px; font-size: 0.8rem; }
+        
         .stats-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-card { background: #ffffff; border-radius: 16px; padding: 1.2rem 1rem; text-align: center; border: 1px solid #eaeef3; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
         .stat-card .stat-number { font-size: 2rem; font-weight: 700; color: #0b1e2e; }
@@ -158,6 +186,7 @@
         .status-bar.cancelled { background: #c53e3e; }
         .status-legend { display: flex; flex-wrap: wrap; gap: 0.8rem 1.5rem; margin: 0.6rem 0 0.2rem; font-size: 0.8rem; color: #1a3b5c; }
         .status-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+        
         .admin-product-form { background: #f9fbfd; border-radius: 16px; padding: 1.2rem; border: 1px solid #eaeef3; margin-bottom: 1.5rem; }
         .admin-product-form .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 0.8rem; align-items: flex-end; }
         .admin-product-form .form-row .form-group { margin-bottom: 0; }
@@ -165,6 +194,7 @@
         .admin-product-form .form-row .form-group input { padding: 0.4rem 0.8rem; font-size: 0.9rem; width: 100%; border: 1.5px solid #dce5ef; border-radius: 10px; }
         .admin-product-form .form-row .form-group input:focus { outline: none; border-color: #2a7de1; }
         .admin-product-form .form-row .btn { padding: 0.4rem 1.2rem; height: 38px; white-space: nowrap; }
+        
         .profile-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         .profile-card { background: #f9fbfd; border-radius: 16px; padding: 1.2rem; border: 1px solid #eaeef3; }
         .profile-card h3 { font-size: 1rem; color: #0b1e2e; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 8px; }
@@ -178,6 +208,7 @@
         .address-form { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
         .address-form input { flex: 1; padding: 0.4rem 0.8rem; border: 1.5px solid #dce5ef; border-radius: 10px; font-size: 0.85rem; min-width: 120px; }
         .address-form input:focus { outline: none; border-color: #2a7de1; }
+        
         .edit-profile-form { background: white; padding: 1rem 1.2rem; border-radius: 14px; border: 1px solid #eaeef3; margin-bottom: 1.2rem; }
         .edit-profile-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
         .edit-profile-form .form-group { margin-bottom: 0.6rem; }
@@ -189,6 +220,7 @@
         .edit-profile-form .form-actions .btn { padding: 0.35rem 1.2rem; font-size: 0.85rem; }
         .order-history-item { font-size: 0.85rem; padding: 0.3rem 0; border-bottom: 1px solid #eaeef3; display: flex; justify-content: space-between; }
         .order-history-item:last-child { border-bottom: none; }
+        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: white; border-radius: 28px; max-width: 440px; width: 100%; padding: 2rem; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; position: relative; }
@@ -234,7 +266,6 @@
             <span class="cloud-badge">☁️ 雲端版</span>
         </div>
         <div class="navbar-right">
-            <!-- Line 好友按鈕 -->
             <button class="line-btn" onclick="copyLineID()">
                 <i class="fab fa-line"></i> Line 好友
             </button>
@@ -391,7 +422,7 @@
         <div id="editProfileContainer" style="display:none;">
             <div class="edit-profile-form">
                 <h4 style="margin-bottom:0.6rem;color:#0b1e2e;"><i class="fas fa-user-edit" style="color:#2a7de1;"></i> 編輯個人資料</h4>
-                <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+                <div class="form-row">
                     <div class="form-group">
                         <label>姓名</label>
                         <input type="text" id="editName" placeholder="請輸入姓名" />
@@ -401,7 +432,7 @@
                         <input type="tel" id="editPhone" placeholder="請輸入手機號碼" />
                     </div>
                 </div>
-                <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+                <div class="form-row">
                     <div class="form-group">
                         <label>Email（帳號）</label>
                         <input type="email" id="editEmail" disabled />
@@ -492,15 +523,15 @@ let products = [];
 let orders = [];
 
 // ============================================================
-//  預設商品
+//  預設商品（含 sortOrder）
 // ============================================================
 const DEFAULT_PRODUCTS = [
-    { id: 1, name: '經典後背包', price: 1280, desc: '耐用防潑水，大容量收納，適合通勤與旅行', image: 'https://picsum.photos/seed/bag/400/300' },
-    { id: 2, name: '無線藍牙耳機', price: 890, desc: '主動降噪，續航24小時，舒適佩戴體驗', image: 'https://picsum.photos/seed/earphone/400/300' },
-    { id: 3, name: '質感陶瓷杯', price: 420, desc: '手工製作，釉色溫潤，送禮自用兩相宜', image: 'https://picsum.photos/seed/cup/400/300' },
-    { id: 4, name: 'LED 閱讀燈', price: 650, desc: '三段調光，護眼不閃爍，可彎曲設計', image: 'https://picsum.photos/seed/lamp/400/300' },
-    { id: 5, name: '智慧手錶', price: 1990, desc: '心率監測、運動追蹤、防水50米', image: 'https://picsum.photos/seed/watch/400/300' },
-    { id: 6, name: '無線充電盤', price: 750, desc: '快速充電，相容所有Qi設備，輕巧便攜', image: 'https://picsum.photos/seed/charger/400/300' },
+    { id: 1, name: '經典後背包', price: 1280, desc: '耐用防潑水，大容量收納，適合通勤與旅行', image: 'https://picsum.photos/seed/bag/400/300', sortOrder: 1 },
+    { id: 2, name: '無線藍牙耳機', price: 890, desc: '主動降噪，續航24小時，舒適佩戴體驗', image: 'https://picsum.photos/seed/earphone/400/300', sortOrder: 2 },
+    { id: 3, name: '質感陶瓷杯', price: 420, desc: '手工製作，釉色溫潤，送禮自用兩相宜', image: 'https://picsum.photos/seed/cup/400/300', sortOrder: 3 },
+    { id: 4, name: 'LED 閱讀燈', price: 650, desc: '三段調光，護眼不閃爍，可彎曲設計', image: 'https://picsum.photos/seed/lamp/400/300', sortOrder: 4 },
+    { id: 5, name: '智慧手錶', price: 1990, desc: '心率監測、運動追蹤、防水50米', image: 'https://picsum.photos/seed/watch/400/300', sortOrder: 5 },
+    { id: 6, name: '無線充電盤', price: 750, desc: '快速充電，相容所有Qi設備，輕巧便攜', image: 'https://picsum.photos/seed/charger/400/300', sortOrder: 6 },
 ];
 
 // ============================================================
@@ -524,7 +555,7 @@ async function initProducts() {
 
 async function loadProducts() {
     try {
-        const snapshot = await db.collection('products').orderBy('id').get();
+        const snapshot = await db.collection('products').orderBy('sortOrder').get();
         products = [];
         snapshot.forEach(doc => {
             products.push({ id: parseInt(doc.id), ...doc.data() });
@@ -541,19 +572,43 @@ async function addProduct(name, price, desc, image) {
     try {
         const maxId = products.reduce((max, p) => Math.max(max, p.id), 0);
         const newId = maxId + 1;
+        const maxOrder = products.reduce((max, p) => Math.max(max, p.sortOrder || 0), 0);
         const newProduct = {
             id: newId,
             name: name.trim(),
             price: parseInt(price),
             desc: desc || '精美商品，值得擁有',
-            image: image || 'https://picsum.photos/seed/' + Date.now() + '/400/300'
+            image: image || 'https://picsum.photos/seed/' + Date.now() + '/400/300',
+            sortOrder: maxOrder + 1
         };
         await db.collection('products').doc(newId.toString()).set(newProduct);
         products.push(newProduct);
-        renderProducts();
+        await loadProducts();
         return { success: true, product: newProduct };
     } catch (error) {
         console.error('新增商品失敗:', error);
+        return { success: false, message: error.message };
+    }
+}
+
+// 交換兩個商品的 sortOrder
+async function swapProductOrder(productId1, productId2) {
+    try {
+        const p1 = products.find(p => p.id === productId1);
+        const p2 = products.find(p => p.id === productId2);
+        if (!p1 || !p2) return { success: false, message: '商品不存在' };
+        
+        const tempOrder = p1.sortOrder;
+        p1.sortOrder = p2.sortOrder;
+        p2.sortOrder = tempOrder;
+        
+        await db.collection('products').doc(p1.id.toString()).update({ sortOrder: p1.sortOrder });
+        await db.collection('products').doc(p2.id.toString()).update({ sortOrder: p2.sortOrder });
+        
+        await loadProducts();
+        return { success: true };
+    } catch (error) {
+        console.error('交換順序失敗:', error);
         return { success: false, message: error.message };
     }
 }
@@ -788,7 +843,7 @@ function calcTotalItems() {
 }
 
 // ============================================================
-//  渲染函數
+//  渲染函數（含移動按鈕）
 // ============================================================
 
 function renderProducts() {
@@ -801,11 +856,14 @@ function renderProducts() {
     }
 
     let html = '';
-    products.forEach(p => {
+    products.forEach((p, index) => {
         const imgHtml = p.image 
             ? `<img class="product-image" src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />`
             : '';
         const placeholderHtml = p.image ? '' : `<div class="product-image-placeholder"><i class="fa-solid fa-box"></i></div>`;
+        
+        const isFirst = index === 0;
+        const isLast = index === products.length - 1;
         
         html += `
             <div class="product-card" data-id="${p.id}">
@@ -818,11 +876,23 @@ function renderProducts() {
                 <button class="btn btn-primary btn-sm add-to-cart" data-id="${p.id}">
                     <i class="fas fa-cart-plus"></i> 加入購物車
                 </button>
+                ${isAdmin ? `
+                    <div class="admin-controls">
+                        <button class="move-btn move-up" data-id="${p.id}" ${isFirst ? 'disabled' : ''} title="上移">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button class="move-btn move-down" data-id="${p.id}" ${isLast ? 'disabled' : ''} title="下移">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <span style="font-size:0.65rem;color:#8aa3bf;">#${index + 1}</span>
+                    </div>
+                ` : ''}
             </div>
         `;
     });
     grid.innerHTML = html;
 
+    // 加入購物車事件
     document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', async function() {
             if (!currentUser) {
@@ -835,6 +905,7 @@ function renderProducts() {
         });
     });
 
+    // 刪除商品事件
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', async function(e) {
             e.stopPropagation();
@@ -842,6 +913,28 @@ function renderProducts() {
             if (confirm('確定要刪除此商品嗎？')) {
                 await deleteProduct(id);
             }
+        });
+    });
+
+    // 上移事件
+    document.querySelectorAll('.move-up').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const id = parseInt(this.dataset.id);
+            const currentIndex = products.findIndex(p => p.id === id);
+            if (currentIndex <= 0) return;
+            const prevId = products[currentIndex - 1].id;
+            await swapProductOrder(id, prevId);
+        });
+    });
+
+    // 下移事件
+    document.querySelectorAll('.move-down').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const id = parseInt(this.dataset.id);
+            const currentIndex = products.findIndex(p => p.id === id);
+            if (currentIndex >= products.length - 1) return;
+            const nextId = products[currentIndex + 1].id;
+            await swapProductOrder(id, nextId);
         });
     });
 }
@@ -1436,7 +1529,7 @@ document.getElementById('addAddressBtn').addEventListener('click', async functio
 });
 
 // ============================================================
-//  綁定「新增商品」按鈕事件（永久有效）
+//  綁定「新增商品」按鈕事件
 // ============================================================
 function bindAddProductButton() {
     const addBtn = document.getElementById('addProductBtn');
@@ -1471,7 +1564,7 @@ async function handleAddProduct() {
         document.getElementById('newProductDesc').value = '';
         document.getElementById('newProductImage').value = '';
         alert('✅ 商品已新增！');
-        renderProducts();
+        await loadProducts();
     } else {
         alert('❌ ' + result.message);
     }
