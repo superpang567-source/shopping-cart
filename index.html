@@ -7,6 +7,7 @@
     <!-- PWA 設定 -->
     <link rel="manifest" href="manifest.json" />
     <link rel="apple-touch-icon" href="icon-192.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="極簡邦購" />
@@ -72,7 +73,6 @@
         .btn-danger-outline { background: transparent; border: 1px solid #f0ced0; color: #a54a4a; }
         .btn-danger-outline:hover { background: #ffe8e8; }
         
-        /* 商品移動按鈕 */
         .move-btn {
             background: #e8effa;
             border: none;
@@ -111,8 +111,6 @@
         .product-card .btn { width: 100%; justify-content: center; }
         .product-card .delete-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #f8d7da; border: none; color: #721c24; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: 0.15s; z-index: 2; display: flex; align-items: center; justify-content: center; }
         .product-card .delete-btn:hover { background: #c53e3e; color: white; }
-        
-        /* 管理員專用移動按鈕區 */
         .admin-controls { display: flex; justify-content: center; gap: 0.3rem; margin-top: 0.4rem; }
         
         .cart-items { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; min-height: 80px; }
@@ -591,7 +589,6 @@ async function addProduct(name, price, desc, image) {
     }
 }
 
-// 交換兩個商品的 sortOrder
 async function swapProductOrder(productId1, productId2) {
     try {
         const p1 = products.find(p => p.id === productId1);
@@ -843,7 +840,7 @@ function calcTotalItems() {
 }
 
 // ============================================================
-//  渲染函數（含移動按鈕）
+//  渲染函數
 // ============================================================
 
 function renderProducts() {
@@ -1363,7 +1360,13 @@ async function renderProfile() {
 
     document.getElementById('editProfileContainer').style.display = 'block';
     document.getElementById('editName').value = currentUserData.name || '';
-    document.getElementById('editPhone').value = currentUserData.phone || '';
+    
+    // 安全設定 editPhone
+    const editPhoneEl = document.getElementById('editPhone');
+    if (editPhoneEl) {
+        editPhoneEl.value = currentUserData.phone || '';
+    }
+    
     document.getElementById('editEmail').value = currentUserData.email || '';
     document.getElementById('editPassword').value = '';
     document.getElementById('editPasswordConfirm').value = '';
@@ -1468,8 +1471,8 @@ document.getElementById('saveProfileBtn').addEventListener('click', async functi
         return;
     }
 
-    const updateData = { name: name }
-    if (phone) updateData.phone = phone
+    const updateData = { name: name };
+    if (phone) updateData.phone = phone;
 
     const result = await updateUserData(currentUser.uid, updateData);
     if (result.success) {
@@ -1502,7 +1505,10 @@ document.getElementById('saveProfileBtn').addEventListener('click', async functi
 document.getElementById('cancelEditBtn').addEventListener('click', function() {
     if (currentUserData) {
         document.getElementById('editName').value = currentUserData.name || '';
-        document.getElementById('editPhone').value = currentUserData.phone || '';
+        const editPhoneEl = document.getElementById('editPhone');
+        if (editPhoneEl) {
+            editPhoneEl.value = currentUserData.phone || '';
+        }
         document.getElementById('editEmail').value = currentUserData.email || '';
         document.getElementById('editPassword').value = '';
         document.getElementById('editPasswordConfirm').value = '';
