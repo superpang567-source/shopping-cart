@@ -1352,90 +1352,101 @@ async function renderStats() {
 
 async function renderProfile() {
     if (!currentUser || !currentUserData) {
-        document.getElementById('addressList').innerHTML = `<div class="empty-cart"><i class="fas fa-lock"></i><p>請先登入查看會員資料</p></div>`;
-        document.getElementById('orderHistoryList').innerHTML = `<div class="empty-cart"><i class="fas fa-lock"></i><p>請先登入查看訂單歷史</p></div>`;
-        document.getElementById('editProfileContainer').style.display = 'none';
+        const addressList = document.getElementById('addressList');
+        const orderHistoryList = document.getElementById('orderHistoryList');
+        const editProfileContainer = document.getElementById('editProfileContainer');
+        if (addressList) addressList.innerHTML = `<div class="empty-cart"><i class="fas fa-lock"></i><p>請先登入查看會員資料</p></div>`;
+        if (orderHistoryList) orderHistoryList.innerHTML = `<div class="empty-cart"><i class="fas fa-lock"></i><p>請先登入查看訂單歷史</p></div>`;
+        if (editProfileContainer) editProfileContainer.style.display = 'none';
         return;
     }
 
-    document.getElementById('editProfileContainer').style.display = 'block';
-    document.getElementById('editName').value = currentUserData.name || '';
-    
-    // 安全設定 editPhone
-    const editPhoneEl = document.getElementById('editPhone');
-    if (editPhoneEl) {
-        editPhoneEl.value = currentUserData.phone || '';
-    }
-    
-    document.getElementById('editEmail').value = currentUserData.email || '';
-    document.getElementById('editPassword').value = '';
-    document.getElementById('editPasswordConfirm').value = '';
-    document.getElementById('editProfileMessage').style.display = 'none';
+    const editName = document.getElementById('editName');
+    const editPhone = document.getElementById('editPhone');
+    const editEmail = document.getElementById('editEmail');
+    const editPassword = document.getElementById('editPassword');
+    const editPasswordConfirm = document.getElementById('editPasswordConfirm');
+    const editProfileMessage = document.getElementById('editProfileMessage');
+    const editProfileContainer = document.getElementById('editProfileContainer');
+    const addressList = document.getElementById('addressList');
+    const orderHistoryList = document.getElementById('orderHistoryList');
+
+    if (editProfileContainer) editProfileContainer.style.display = 'block';
+    if (editName) editName.value = currentUserData.name || '';
+    if (editPhone) editPhone.value = currentUserData.phone || '';
+    if (editEmail) editEmail.value = currentUserData.email || '';
+    if (editPassword) editPassword.value = '';
+    if (editPasswordConfirm) editPasswordConfirm.value = '';
+    if (editProfileMessage) editProfileMessage.style.display = 'none';
 
     const addresses = currentUserData.addresses || [];
-    if (addresses.length === 0) {
-        document.getElementById('addressList').innerHTML = `<p style="color:#5f7c9a;">尚無儲存地址或社區</p>`;
-    } else {
-        let html = '';
-        addresses.forEach((addr, idx) => {
-            const isDefault = idx === 0;
-            html += `
-                <div class="address-item">
-                    <span>${addr}</span>
-                    <div class="address-actions">
-                        ${!isDefault ? `<button class="set-default-btn" data-index="${idx}" title="設為預設"><i class="fas fa-star"></i></button>` : ''}
-                        <button class="delete-addr-btn" data-index="${idx}" title="刪除地址"><i class="fas fa-trash-alt"></i></button>
-                        ${isDefault ? '<span class="default-badge">預設</span>' : ''}
+    if (addressList) {
+        if (addresses.length === 0) {
+            addressList.innerHTML = `<p style="color:#5f7c9a;">尚無儲存地址或社區</p>`;
+        } else {
+            let html = '';
+            addresses.forEach((addr, idx) => {
+                const isDefault = idx === 0;
+                html += `
+                    <div class="address-item">
+                        <span>${addr}</span>
+                        <div class="address-actions">
+                            ${!isDefault ? `<button class="set-default-btn" data-index="${idx}" title="設為預設"><i class="fas fa-star"></i></button>` : ''}
+                            <button class="delete-addr-btn" data-index="${idx}" title="刪除地址"><i class="fas fa-trash-alt"></i></button>
+                            ${isDefault ? '<span class="default-badge">預設</span>' : ''}
+                        </div>
                     </div>
-                </div>
-            `;
-        });
-        document.getElementById('addressList').innerHTML = html;
-
-        document.querySelectorAll('.delete-addr-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const index = parseInt(this.dataset.index);
-                if (!currentUserData.addresses || currentUserData.addresses.length <= 1) {
-                    alert('⚠️ 至少保留一個地址或社區！');
-                    return;
-                }
-                if (!confirm('確定要刪除此地址或社區嗎？')) return;
-                currentUserData.addresses.splice(index, 1);
-                await updateUserData(currentUser.uid, { addresses: currentUserData.addresses });
-                await renderProfile();
+                `;
             });
-        });
+            addressList.innerHTML = html;
 
-        document.querySelectorAll('.set-default-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const index = parseInt(this.dataset.index);
-                if (index === 0) return;
-                const address = currentUserData.addresses.splice(index, 1)[0];
-                currentUserData.addresses.unshift(address);
-                await updateUserData(currentUser.uid, { addresses: currentUserData.addresses });
-                await renderProfile();
+            document.querySelectorAll('.delete-addr-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const index = parseInt(this.dataset.index);
+                    if (!currentUserData.addresses || currentUserData.addresses.length <= 1) {
+                        alert('⚠️ 至少保留一個地址或社區！');
+                        return;
+                    }
+                    if (!confirm('確定要刪除此地址或社區嗎？')) return;
+                    currentUserData.addresses.splice(index, 1);
+                    await updateUserData(currentUser.uid, { addresses: currentUserData.addresses });
+                    await renderProfile();
+                });
             });
-        });
+
+            document.querySelectorAll('.set-default-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const index = parseInt(this.dataset.index);
+                    if (index === 0) return;
+                    const address = currentUserData.addresses.splice(index, 1)[0];
+                    currentUserData.addresses.unshift(address);
+                    await updateUserData(currentUser.uid, { addresses: currentUserData.addresses });
+                    await renderProfile();
+                });
+            });
+        }
     }
 
-    if (orders.length === 0) {
-        document.getElementById('orderHistoryList').innerHTML = `<p style="color:#5f7c9a;">尚無訂單紀錄</p>`;
-    } else {
-        const statusMap = {
-            'pending': '待處理', 'processing': '處理中', 'shipped': '已出貨',
-            'delivered': '已送達', 'cancelled': '已取消'
-        };
-        let html = '';
-        orders.slice(0, 10).forEach(order => {
-            html += `
-                <div class="order-history-item">
-                    <span>${order.id}</span>
-                    <span>${statusMap[order.status] || order.status}</span>
-                    <span>$ ${order.total}</span>
-                </div>
-            `;
-        });
-        document.getElementById('orderHistoryList').innerHTML = html;
+    if (orderHistoryList) {
+        if (orders.length === 0) {
+            orderHistoryList.innerHTML = `<p style="color:#5f7c9a;">尚無訂單紀錄</p>`;
+        } else {
+            const statusMap = {
+                'pending': '待處理', 'processing': '處理中', 'shipped': '已出貨',
+                'delivered': '已送達', 'cancelled': '已取消'
+            };
+            let html = '';
+            orders.slice(0, 10).forEach(order => {
+                html += `
+                    <div class="order-history-item">
+                        <span>${order.id}</span>
+                        <span>${statusMap[order.status] || order.status}</span>
+                        <span>$ ${order.total}</span>
+                    </div>
+                `;
+            });
+            orderHistoryList.innerHTML = html;
+        }
     }
 }
 
